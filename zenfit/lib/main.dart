@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'views/onboarding_screen.dart';
 import 'views/home_screen.dart';
 import 'views/registration_screen.dart';
+import 'views/signin_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const OnboardingScreen(),
         '/home': (context) => const HomeScreen(),
-        '/registration': (context) => RegistrationScreen(),
+        '/registration': (context) => const RegistrationScreen(),
+        '/signin': (context) => const SigninScreen(),
       },
     );
   }

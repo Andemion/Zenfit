@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import '../database.dart';
 
-class RegistrationScreen extends StatefulWidget {
-  const RegistrationScreen({super.key});
+class SigninScreen extends StatefulWidget {
+  const SigninScreen({super.key});
 
   @override
-  _RegistrationScreenState createState() => _RegistrationScreenState();
+  _SigninScreenState createState() => _SigninScreenState();
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> {
+class _SigninScreenState extends State<SigninScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
-  Future<void> _signup() async {
+  Future<void> _signin() async {
     String email = _emailController.text;
     String password = _passwordController.text;
 
@@ -24,31 +24,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       return;
     }
 
-    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez entrer un email valide')),
-      );
-      return;
-    }
-
     List<Map<String, dynamic>> existingUsers = await _databaseHelper.getUsers();
-    if (existingUsers.any((user) => user['email'] == email)) {
+    
+    Map<String, dynamic>? user = existingUsers.firstWhere(
+      (user) => user['email'] == email && user['password'] == password,
+      orElse: () => {},
+    );
+
+    if (user.isEmpty) { 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vous avez déjà un compte')),
+        const SnackBar(content: Text('Email ou mot de passe incorrect')),
       );
       return;
     }
-
-    await _databaseHelper.insertUser(email, password);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Inscription réussie !')),
+      const SnackBar(content: Text('Connexion réussie !')),
     );
 
     Navigator.of(context).pushReplacementNamed('/home');
-
-    _emailController.clear();
-    _passwordController.clear();
   }
 
   @override
@@ -68,7 +62,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  'Inscription',
+                  'Connexion',
                   style: TextStyle(
                     color: Color(0xFF000000),
                     fontSize: 40,
@@ -77,7 +71,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Inscrivez-vous à ZenFit !',
+                  'Connectez-vous à ZenFit !',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 18,
@@ -135,14 +129,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 const SizedBox(height: 40),
                 ElevatedButton(
-                  onPressed: _signup,
+                  onPressed: _signin,
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: const Color(0xFF1A43EE),
                     padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 25.0),
                   ),
                   child: const Text(
-                    'INSCRIPTION',
+                    'CONNEXION',
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
@@ -150,13 +144,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Déjà inscrit ? "),
+                    const Text("Pas encore inscrit ? "),
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).pushReplacementNamed('/signin');
+                        Navigator.of(context).pushReplacementNamed('/registration');
                       },
                       child: const Text(
-                        'Connectez-vous',
+                        'Inscrivez-vous',
                         style: TextStyle(
                           color: Color(0xFF1A43EE),
                           fontWeight: FontWeight.bold,

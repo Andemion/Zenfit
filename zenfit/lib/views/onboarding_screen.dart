@@ -13,7 +13,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacementNamed('/registration');
+      Navigator.of(context).pushReplacementNamed('/signin');
     });
   }
 
