@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:zenfit/views/profil_screen.dart';
 import 'views/onboarding_screen.dart';
-import 'views/home_screen.dart';
+import 'layout/main_page.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const OnboardingScreen(),
-        '/home': (context) => const HomeScreen(),
+        '/main': (context) => const MainPage(),
       },
     );
   }
