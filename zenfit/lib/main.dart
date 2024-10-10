@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zenfit/views/profil_screen.dart';
 import 'views/onboarding_screen.dart';
-import 'views/home_screen.dart';
+import 'layout/main_page.dart';
 import 'views/registration_screen.dart';
 import 'views/signin_screen.dart';
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const OnboardingScreen(),
-        '/home': (context) => const HomeScreen(),
+        '/main': (context) => const MainPage(),
         '/registration': (context) => const RegistrationScreen(),
         '/signin': (context) => const SigninScreen(),
       },

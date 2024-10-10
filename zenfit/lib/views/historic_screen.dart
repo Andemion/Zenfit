@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:zenfit/widgets/bottom_bar.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HistoricScreen extends StatelessWidget {
+  const HistoricScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Accueil'),
+        title: const Text('Historique'),
       ),
       body: const Center(
         child: Text(
-          'Bienvenue sur l\'écran d\'accueil',
+          'Bienvenue sur l\'écran d\'historique',
           style: TextStyle(fontSize: 24),
         ),
       ),
