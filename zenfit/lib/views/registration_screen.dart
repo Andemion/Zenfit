@@ -45,7 +45,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       const SnackBar(content: Text('Inscription réussie !')),
     );
 
-    Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.of(context).pushReplacementNamed('/main');
 
     _emailController.clear();
     _passwordController.clear();

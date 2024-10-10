@@ -42,7 +42,7 @@ class _SigninScreenState extends State<SigninScreen> {
       const SnackBar(content: Text('Connexion réussie !')),
     );
 
-    Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.of(context).pushReplacementNamed('/main');
   }
 
   @override
