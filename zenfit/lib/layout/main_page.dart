@@ -18,7 +18,7 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = [
     const HomeScreen(),
-    const PlanningScreen(),
+    PlanningScreen(),
     const HistoricScreen(),
     const ProfilScreen(),
   ];

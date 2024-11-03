@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zenfit/widgets/style/button_style.dart';
+import 'package:zenfit/widgets/style/text_style.dart';
+import 'package:zenfit/widgets/style/input_decoration.dart';
 import '../database.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -61,21 +64,14 @@ class _SigninScreenState extends State<SigninScreen> {
                   width: MediaQuery.of(context).size.width * 0.3,
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Connexion',
-                  style: TextStyle(
-                    color: Color(0xFF000000),
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TitleStyle,
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   'Connectez-vous à ZenFit !',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                  ),
+                  style: ContentTextStyle,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),
@@ -83,21 +79,8 @@ class _SigninScreenState extends State<SigninScreen> {
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: TextField(
                     controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: const TextStyle(color: Color(0xFF777777)),
-                      filled: true,
-                      fillColor: const Color(0xFFEBE9E9),
-                      border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    decoration: greyInput.copyWith(
+                      labelText: 'Email'
                     ),
                     style: const TextStyle(color: Colors.black),
                   ),
@@ -108,21 +91,8 @@ class _SigninScreenState extends State<SigninScreen> {
                   child: TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Mot de passe',
-                      labelStyle: const TextStyle(color: Color(0xFF777777)),
-                      filled: true,
-                      fillColor: const Color(0xFFEBE9E9),
-                      border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    decoration: greyInput.copyWith(
+                      labelText: 'Mot de passe'
                     ),
                     style: const TextStyle(color: Colors.black),
                   ),
@@ -130,11 +100,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: _signin,
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFF1A43EE),
-                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 25.0),
-                  ),
+                  style: BleuButtonStyle,
                   child: const Text(
                     'CONNEXION',
                     style: TextStyle(fontSize: 16),

@@ -1,0 +1,11 @@
+import 'package:flutter/material.dart';
+
+final BoxDecoration whiteBox = BoxDecoration(
+    border: Border.all(color: const Color(0xFF1A43EE)),
+    borderRadius: BorderRadius.circular(8), // Coins arrondis
+);
+
+final BoxDecoration greyBox = BoxDecoration(
+    color: const Color(0xFFEBE9E9), // Fond gris clair
+    borderRadius: BorderRadius.circular(50), // Coins arrondis
+);
