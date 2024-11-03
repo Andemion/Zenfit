@@ -32,7 +32,7 @@ class _BottomBar extends State<BottomBar> {
       case 1:
         Navigator.pushReplacement (
           context,
-          MaterialPageRoute(builder: (context) => const PlanningScreen()),
+          MaterialPageRoute(builder: (context) => PlanningScreen()),
         );
         break;
       case 2:
@@ -53,7 +53,6 @@ class _BottomBar extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
