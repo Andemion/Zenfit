@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:zenfit/views/profil_screen.dart';
 import 'views/onboarding_screen.dart';
-import 'views/home_screen.dart';
+import 'layout/main_page.dart';
 import 'views/registration_screen.dart';
 import 'views/signin_screen.dart';
 
@@ -38,6 +39,9 @@ class MyApp extends StatelessWidget {
         },
       ),
       routes: {
+        '/': (context) => const OnboardingScreen(),
+        '/main': (context) => const MainPage(),
+
         '/registration': (context) => const RegistrationScreen(),
         '/signin': (context) => const SigninScreen(),
         '/home': (context) => const HomeScreen(),

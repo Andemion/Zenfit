@@ -71,9 +71,7 @@ Future<void> _googleLogin() async {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-
       await _auth.signInWithCredential(credential);
-
       Navigator.of(context).pushReplacementNamed('/home');
     }
   } catch (error) {
