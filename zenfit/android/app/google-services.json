@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "232605407215",
+    "project_id": "zenfit-e31e7",
+    "storage_bucket": "zenfit-e31e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232605407215:android:00fb329be365e03b2f081a",
+        "android_client_info": {
+          "package_name": "com.example.zenfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "232605407215-auudjqe03lpd5aqv339ub2ie78gmgv71.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.zenfit",
+            "certificate_hash": "c0f2704522e9342e57b680f6b3643dce4b5bbffc"
+          }
+        },
+        {
+          "client_id": "232605407215-6ho96rcncint2d70n3tr0o10qbcnlrpf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT_dGYWrm4kYRAF8p5DLkynVGA69vI2Hk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "232605407215-6ho96rcncint2d70n3tr0o10qbcnlrpf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

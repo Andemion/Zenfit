@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -11,7 +12,13 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final DatabaseHelper _databaseHelper = DatabaseHelper();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Future<void> _signup() async {
     String email = _emailController.text;
@@ -31,25 +38,50 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       return;
     }
 
-    List<Map<String, dynamic>> existingUsers = await _databaseHelper.getUsers();
-    if (existingUsers.any((user) => user['email'] == email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vous avez déjà un compte')),
+    try {
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
       );
-      return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Inscription réussie !')),
+      );
+
+      Navigator.of(context).pushReplacementNamed('/home');
+    } on FirebaseAuthException catch (e) {
+      String message = 'Erreur inconnue';
+      if (e.code == 'email-already-in-use') {
+        message = 'Cet email est déjà utilisé';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     }
-
-    await _databaseHelper.insertUser(email, password);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Inscription réussie !')),
-    );
-
-    Navigator.of(context).pushReplacementNamed('/main');
-
-    _emailController.clear();
-    _passwordController.clear();
   }
+
+Future<void> _googleLogin() async {
+  try {
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    if (googleUser != null) {
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      Navigator.of(context).pushReplacementNamed('/home');
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await _auth.signInWithCredential(credential);
+      Navigator.of(context).pushReplacementNamed('/home');
+    }
+  } catch (error) {
+    print('Erreur lors de la connexion avec Google: $error'); // Gérez les erreurs ici
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Erreur lors de la connexion avec Google')),
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -147,23 +179,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Déjà inscrit ? "),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushReplacementNamed('/signin');
-                      },
-                      child: const Text(
-                        'Connectez-vous',
-                        style: TextStyle(
-                          color: Color(0xFF1A43EE),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
+                const Text('ou'),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _googleLogin,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: const Color(0xFFDB4437), // Couleur Google
+                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 25.0),
+                  ),
+                  child: const Text(
+                    'S\'inscrire avec Google',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text('Déjà inscrit ?'),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/signin');
+                  },
+                  child: const Text('Connectez-vous !'),
                 ),
               ],
             ),
