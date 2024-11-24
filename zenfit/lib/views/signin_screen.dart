@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -11,7 +12,13 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final DatabaseHelper _databaseHelper = DatabaseHelper();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Future<void> _signin() async {
     String email = _emailController.text;
@@ -24,25 +31,63 @@ class _SigninScreenState extends State<SigninScreen> {
       return;
     }
 
-    List<Map<String, dynamic>> existingUsers = await _databaseHelper.getUsers();
-    
-    Map<String, dynamic>? user = existingUsers.firstWhere(
-      (user) => user['email'] == email && user['password'] == password,
-      orElse: () => {},
-    );
-
-    if (user.isEmpty) { 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email ou mot de passe incorrect')),
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
       );
-      return;
-    }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Connexion réussie !')),
-    );
-
+      User? user = userCredential.user;
+      if (user != null) {
+    print("Connexion réussie pour : ${user.email}");
     Navigator.of(context).pushReplacementNamed('/home');
+  } else {
+    print("L'utilisateur est null après la connexion.");
+  }
+    } on FirebaseAuthException catch (e) {
+      String message = 'Erreur inconnue';
+      if (e.code == 'wrong-password') {
+        message = 'Mot de passe incorrect';
+      } else if (e.code == 'user-not-found') {
+        message = 'Aucun utilisateur trouvé pour cet email';
+      } else if (e.code == 'invalid-email') {
+        message = 'Email invalide';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+  }
+
+  Future<void> _googleLogin() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        Navigator.of(context).pushReplacementNamed('/home');
+
+        if (googleAuth.accessToken != null && googleAuth.idToken != null) {
+          final credential = GoogleAuthProvider.credential(
+            accessToken: googleAuth.accessToken,
+            idToken: googleAuth.idToken,
+          );
+
+          UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+          User? user = userCredential.user;
+          if (user != null) {
+            Navigator.of(context).pushReplacementNamed('/home');
+          }
+        } else {
+          throw Exception("Token d'accès ou ID manquant.");
+        }
+      }
+    } catch (error) {
+      print('Erreur lors de la connexion avec Google: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erreur lors de la connexion avec Google')),
+      );
+    }
   }
 
   @override
@@ -141,23 +186,27 @@ class _SigninScreenState extends State<SigninScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Pas encore inscrit ? "),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushReplacementNamed('/registration');
-                      },
-                      child: const Text(
-                        'Inscrivez-vous',
-                        style: TextStyle(
-                          color: Color(0xFF1A43EE),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
+                const Text('ou'),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _googleLogin,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: const Color(0xFFDB4437), // Couleur Google
+                    padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 25.0),
+                  ),
+                  child: const Text(
+                    'Se connecter avec Google',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text('Pas encore inscrit ?'),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/registration');
+                  },
+                  child: const Text('Inscrivez-vous !'),
                 ),
               ],
             ),
