@@ -48,7 +48,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         const SnackBar(content: Text('Inscription réussie !')),
       );
 
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed('/main');
     } on FirebaseAuthException catch (e) {
       String message = 'Erreur inconnue';
       if (e.code == 'email-already-in-use') {
@@ -65,14 +65,16 @@ Future<void> _googleLogin() async {
     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
     if (googleUser != null) {
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed('/main');
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+
       await _auth.signInWithCredential(credential);
-      Navigator.of(context).pushReplacementNamed('/home');
+
+      Navigator.of(context).pushReplacementNamed('/main');
     }
   } catch (error) {
     print('Erreur lors de la connexion avec Google: $error'); // Gérez les erreurs ici
