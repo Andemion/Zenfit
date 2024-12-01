@@ -45,7 +45,7 @@ class _SigninScreenState extends State<SigninScreen> {
       User? user = userCredential.user;
       if (user != null) {
     print("Connexion réussie pour : ${user.email}");
-    Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.of(context).pushReplacementNamed('/main');
   } else {
     print("L'utilisateur est null après la connexion.");
   }
@@ -69,7 +69,7 @@ class _SigninScreenState extends State<SigninScreen> {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser != null) {
         final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.of(context).pushReplacementNamed('/main');
 
         if (googleAuth.accessToken != null && googleAuth.idToken != null) {
           final credential = GoogleAuthProvider.credential(
@@ -81,7 +81,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
           User? user = userCredential.user;
           if (user != null) {
-            Navigator.of(context).pushReplacementNamed('/home');
+            Navigator.of(context).pushReplacementNamed('/main');
           }
         } else {
           throw Exception("Token d'accès ou ID manquant.");

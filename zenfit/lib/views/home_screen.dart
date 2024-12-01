@@ -7,15 +7,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Accueil'),
-      ),
-      body: const Center(
-        child: Text(
-          'Bienvenue sur l\'écran d\'accueil',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
+      body: const Center(child: Text("Home Screen")), // Votre contenu de la page d'accueil
     );
   }
 }

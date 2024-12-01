@@ -1,81 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:zenfit/views/profil_screen.dart';
-import 'package:zenfit/views/home_screen.dart';
-import 'package:zenfit/views/planning_screen.dart';
-import 'package:zenfit/views/historic_screen.dart';
+import 'package:provider/provider.dart'; // Importer Provider pour accéder à ThemeColorProvider
+import 'package:zenfit/themes/color.dart'; // Import de ThemeColorProvider
 
 class BottomBar extends StatefulWidget {
   final Function(int) onTap;
+  final int currentIndex;
 
-  const BottomBar({Key? key, required this.onTap}) : super(key: key);
+  const BottomBar({Key? key, required this.onTap, required this.currentIndex}) : super(key: key);
 
   @override
   _BottomBar createState() => _BottomBar();
 }
 
 class _BottomBar extends State<BottomBar> {
-  int _selectedIndex = 0;
-
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
     widget.onTap(index);
-
-    switch (_selectedIndex) {
-      case 0:
-        Navigator.pushReplacement (
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-        break;
-      case 1:
-        Navigator.pushReplacement (
-          context,
-          MaterialPageRoute(builder: (context) => PlanningScreen()),
-        );
-        break;
-      case 2:
-        Navigator.pushReplacement (
-          context,
-          MaterialPageRoute(builder: (context) => const HistoricScreen()),
-        );
-        break;
-      case 3:
-        Navigator.pushReplacement (
-          context,
-          MaterialPageRoute(builder: (context) => const ProfilScreen()),
-        );
-        break;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Récupération de la couleur du thème via le provider
+    Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
+
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
+      items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
-          backgroundColor: Color(0xFF1A43EE),
+          backgroundColor: themeColor, // Application de la couleur dynamique pour l'item
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
           label: 'Planning',
-          backgroundColor: Color(0xFF1A43EE),
+          backgroundColor: themeColor, // Application de la couleur dynamique pour l'item
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.history),
           label: 'Historic',
-          backgroundColor: Color(0xFF1A43EE),
+          backgroundColor: themeColor, // Application de la couleur dynamique pour l'item
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Profil',
-          backgroundColor: Color(0xFF1A43EE),
+          backgroundColor: themeColor, // Application de la couleur dynamique pour l'item
         ),
       ],
-      currentIndex: _selectedIndex,
+      currentIndex: widget.currentIndex,
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.white70,
       onTap: _onItemTapped,
