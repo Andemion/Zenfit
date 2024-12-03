@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:zenfit/widgets/style/button_style.dart';
-import 'package:zenfit/widgets/style/text_style.dart';
-import 'package:zenfit/widgets/style/input_decoration.dart';
+import 'package:zenfit/style/button_style.dart';
+import 'package:zenfit/style/text_style.dart';
+import 'package:zenfit/style/input_decoration.dart';
 import '../database.dart';
 
 

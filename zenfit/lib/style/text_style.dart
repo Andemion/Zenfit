@@ -16,3 +16,7 @@ final TextStyle BleuTitleXSTextStyle = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.bold,
 );
+
+final TextStyle whiteTextStyle = TextStyle(
+    color: Colors.white,
+);
