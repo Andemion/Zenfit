@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ThemeColorProvider with ChangeNotifier {
-  Color _themeColor = const Color(0xFF1A43EE); // Valeur par défaut (Bleu)
+  Color _themeColor = const Color(0xFF1A43EE); 
 
   Color get themeColor => _themeColor;
 
@@ -19,6 +19,6 @@ class ThemeColorProvider with ChangeNotifier {
       default:
         _themeColor = Colors.blue;
     }
-    notifyListeners(); // Notifie tous les widgets qui écoutent ce provider
+    notifyListeners(); 
   }
 }

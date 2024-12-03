@@ -119,7 +119,7 @@ class _PlanifySessionWidget extends State<PlanifySessionWidget> {
             color: Colors.white,
           ),
         ),
-        iconTheme: whiteIcon,
+        iconTheme: whiteIcon(context),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -127,7 +127,7 @@ class _PlanifySessionWidget extends State<PlanifySessionWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
-              decoration: greyInput.copyWith(
+              decoration: greyInput(context).copyWith(
                 labelText: "Nom de l'exercice (personnalisé)",
               ),
               onChanged: (String value) {
@@ -140,7 +140,7 @@ class _PlanifySessionWidget extends State<PlanifySessionWidget> {
             GestureDetector(
               onTap: _selectDate,
               child: InputDecorator(
-                decoration: greyInput.copyWith(labelText: 'Date'),
+                decoration: greyInput(context).copyWith(labelText: 'Date'),
                 child: Text(
                   _selectedDate != null
                       ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
@@ -152,7 +152,7 @@ class _PlanifySessionWidget extends State<PlanifySessionWidget> {
             GestureDetector(
               onTap: _selectTime,
               child: InputDecorator(
-                decoration: greyInput.copyWith(labelText: 'Heure'),
+                decoration: greyInput(context).copyWith(labelText: 'Heure'),
                 child: Text(
                   _selectedTime != null
                       ? '${_selectedTime!.hour}:${_selectedTime!.minute.toString().padLeft(2, '0')}'
@@ -162,7 +162,7 @@ class _PlanifySessionWidget extends State<PlanifySessionWidget> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<int>(
-              decoration: greyInput.copyWith(labelText: 'Rappels'),
+              decoration: greyInput(context).copyWith(labelText: 'Rappels'),
               value: _selectedReminder,
               items: _reminderOptions.map((int value) {
                 return DropdownMenuItem<int>(
@@ -181,7 +181,7 @@ class _PlanifySessionWidget extends State<PlanifySessionWidget> {
               child: ElevatedButton(
                 onPressed: _submitSession,
                 child: const Text('CONFIRMER LA SÉANCE'),
-                style: BleuButtonStyle,
+                style: BleuButtonStyle(context),
               ),
             ),
           ],

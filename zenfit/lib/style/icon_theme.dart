@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; 
+import 'package:zenfit/themes/color.dart'; 
 
-final IconThemeData whiteIcon = IconThemeData(
-  color: Colors.white,
-);
+IconThemeData whiteIcon(BuildContext context) {
+  Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
+  return IconThemeData(
+    color: Colors.white, 
+  );
+}
 
-final Icon timerIconStyle = Icon(
-  Icons.timer,
-  color: Color(0xFF1A43EE)
-);
+Icon timerIconStyle(BuildContext context) {
+  Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
+  return Icon(
+    Icons.timer,
+    color: themeColor, 
+  );
+}
