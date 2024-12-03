@@ -4,12 +4,37 @@ import 'database_helper.dart';
 class ExerciseDatabase {
   final DatabaseHelper dbHelper = DatabaseHelper.instance;
 
-  // CREATE : Ajouter un nouvel exercice
-  Future<int> createExercise(Exercise exercise) async {
-    final db = await dbHelper.database;
+  Future<int?> findExerciseIdByName(String name) async {
+    final db = await DatabaseHelper.instance.database;
 
-    // Insérer l'exercice dans la table exercises
-    return await db.insert('exercises', exercise.toJson());
+    final result = await db.query(
+      'exercises',
+      where: 'name = ?',
+      whereArgs: [name],
+      limit: 1,
+    );
+
+    return result.isNotEmpty ? result.first['id'] as int : null;
+  }
+
+  // CREATE : Ajouter un nouvel exercice
+  Future<void> saveExerciseIfNotExists(Exercise exercise) async {
+    final db = await DatabaseHelper.instance.database;
+
+    // Vérifiez si l'exercice existe déjà
+    final existsId = await findExerciseIdByName(exercise.name);
+
+    if (existsId == null) {
+      // Si l'exercice n'existe pas, insérez-le dans la base de données
+      await db.insert('exercises', {
+        'name': exercise.name,
+        'number': exercise.number,
+        'duration': exercise.duration.inSeconds, // Sauvegarder la durée en secondes
+      });
+      print('Exercice sauvegardé dans la base de données.');
+    } else {
+      updateExercise(existsId, exercise);
+    }
   }
 
   // READ : Lire un exercice par son ID
@@ -41,16 +66,28 @@ class ExerciseDatabase {
   }
 
   // UPDATE : Mettre à jour un exercice
-  Future<int> updateExercise(Exercise exercise) async {
-    final db = await dbHelper.database;
+  Future<void> updateExercise(int id, Exercise exercise) async {
+    final db = await DatabaseHelper.instance.database;
 
-    // Mettre à jour l'exercice
-    return await db.update(
-      'exercises',
-      exercise.toJson(),
-      where: 'id = ?',
-      whereArgs: [exercise.id],
-    );
+    final updates = <String, dynamic>{};
+
+    if (exercise.number > 0) {
+      updates['number'] = exercise.number;
+    }
+
+    if (exercise.duration.inSeconds > 0) {
+      updates['duration'] = exercise.duration.inSeconds;
+    }
+
+    if (updates.isNotEmpty) {
+      await db.update(
+        'exercises',
+        updates,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      print('Exercice mis à jour avec succès.');
+    }
   }
 
   // DELETE : Supprimer un exercice
