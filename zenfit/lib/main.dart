@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
                   if (user != null) {
                     return const MainPage(); // Page principale après la connexion
                   }
-                  return const MainPage(); // Page d'onboarding si pas connecté OnboardingScreen()
+                  return const OnboardingScreen(); // Page d'onboarding si pas connecté OnboardingScreen()
                 } else {
                   return const Center(child: CircularProgressIndicator());
                 }

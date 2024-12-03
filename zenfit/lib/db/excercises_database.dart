@@ -1,4 +1,4 @@
-import 'package:zenfit/models/exercise_model.dart';
+import 'package:zenfit/models/exercices_model.dart';
 import 'database_helper.dart';
 
 class ExerciseDatabase {

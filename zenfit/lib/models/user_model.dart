@@ -7,7 +7,8 @@ class User {
   final String password;
   final List<Session>? sessions;
 
-  Session({
+  // Constructeur de la classe User
+  User({
     this.id,
     required this.email,
     required this.password,
