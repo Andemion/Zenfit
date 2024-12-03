@@ -44,7 +44,8 @@ flutter {
 
 dependencies {
     // Importez la Firebase BoM (Bill of Materials)
-    implementation platform('com.google.firebase:firebase-bom:33.4.0')
+    implementation platform('com.google.firebase:firebase-bom:32.2.2')
+    implementation 'com.google.firebase:firebase-auth'
 
     // Ajoutez les dépendances Firebase ici, comme :
     implementation 'com.google.firebase:firebase-auth-ktx'

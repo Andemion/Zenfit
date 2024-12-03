@@ -37,18 +37,14 @@ class _SigninScreenState extends State<SigninScreen> {
     }
 
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      User? user = userCredential.user;
-      if (user != null) {
-    print("Connexion réussie pour : ${user.email}");
-    Navigator.of(context).pushReplacementNamed('/main');
-  } else {
-    print("L'utilisateur est null après la connexion.");
-  }
+      print("Tentative de connexion avec email : $email");
+  UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+    email: email,
+    password: password,
+  );
+  print("Connexion réussie pour l'utilisateur : ${userCredential.user?.email}");
+  // Navigation si succès
+  Navigator.of(context).pushReplacementNamed('/main');
     } on FirebaseAuthException catch (e) {
       String message = 'Erreur inconnue';
       if (e.code == 'wrong-password') {
