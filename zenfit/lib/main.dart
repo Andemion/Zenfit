@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart'; // Import de provider
 import 'package:zenfit/views/profil_screen.dart';
-import 'views/onboarding_screen.dart';
 import 'layout/main_page.dart';
+import 'views/onboarding_screen.dart';
 import 'views/home_screen.dart';
 import 'views/registration_screen.dart';
 import 'views/signin_screen.dart';
@@ -12,6 +12,7 @@ import 'views/historic_screen.dart';
 import 'views/planning_screen.dart';
 import 'themes/color.dart';
 import 'themes/dark_mode.dart';
+import 'package:zenfit/models/session_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,9 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+
   const MyApp({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +68,7 @@ class MyApp extends StatelessWidget {
                   if (user != null) {
                     return const MainPage(); // Page principale après la connexion
                   }
-                  return const OnboardingScreen(); // Page d'onboarding si pas connecté
+                  return const MainPage(); // Page d'onboarding si pas connecté OnboardingScreen()
                 } else {
                   return const Center(child: CircularProgressIndicator());
                 }
@@ -75,7 +78,7 @@ class MyApp extends StatelessWidget {
               '/main': (context) => const MainPage(),
               '/registration': (context) => const RegistrationScreen(),
               '/signin': (context) => const SigninScreen(),
-              '/home': (context) => const HomeScreen(),
+              '/home': (context) => HomeScreen(),
               '/planning': (context) => PlanningScreen(),
               '/historic': (context) => const HistoricScreen(),
               '/profil': (context) => const ProfilScreen(),
