@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; 
 import 'package:zenfit/models/session_model.dart';
 import 'package:zenfit/models/exercices_model.dart';
+import 'package:zenfit/themes/color.dart'; // Assurez-vous d'importer le ThemeColorProvider
 
 class HomeScreen extends StatelessWidget {
-
-
 
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
+    // Récupération de la couleur du thème via le provider
+    Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
 
     final List<Session> sessionList = [];
 
@@ -80,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                 itemCount: todaySessions.length,
                 itemBuilder: (context, index) {
                   final session = todaySessions[index];
-                  return _buildSessionTile(session, isToday: true);
+                  return _buildSessionTile(session, isToday: true, themeColor: themeColor);
                 },
               )
             else
@@ -101,7 +104,7 @@ class HomeScreen extends StatelessWidget {
                 itemCount: weekSessions.length,
                 itemBuilder: (context, index) {
                   final session = weekSessions[index];
-                  return _buildSessionTile(session);
+                  return _buildSessionTile(session, themeColor: themeColor);
                 },
               )
             else
@@ -115,10 +118,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSessionTile(Session session, {bool isToday = false}) {
+  Widget _buildSessionTile(Session session, {bool isToday = false, required Color themeColor}) {
     return Container(
       decoration: BoxDecoration(
-        color: isToday ? Colors.blue : const Color(0xFFEBE9E9),
+        color: isToday ? themeColor : const Color(0xFFEBE9E9), // Application de la couleur dynamique
         borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -134,7 +137,7 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: isToday ? Colors.white : Colors.blue,
+                  color: isToday ? Colors.white : themeColor, // Changer la couleur en fonction de la condition
                 ),
               ),
               const SizedBox(height: 4),

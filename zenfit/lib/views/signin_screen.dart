@@ -118,7 +118,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 const SizedBox(height: 10),
                 Text(
                   'Connectez-vous à ZenFit !',
-                  style: ContentTextStyle,
+                  style: ContentTextStyle(context),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),
@@ -126,7 +126,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: TextField(
                     controller: _emailController,
-                    decoration: greyInput.copyWith(
+                    decoration: greyInput(context).copyWith(
                       labelText: 'Email'
                     ),
                     style: const TextStyle(color: Colors.black),
@@ -138,7 +138,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   child: TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: greyInput.copyWith(
+                    decoration: greyInput(context).copyWith(
                       labelText: 'Mot de passe'
                     ),
                     style: const TextStyle(color: Colors.black),
@@ -147,7 +147,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: _signin,
-                  style: BleuButtonStyle,
+                  style: BleuButtonStyle(context),
                   child: const Text(
                     'CONNEXION',
                     style: TextStyle(fontSize: 16),

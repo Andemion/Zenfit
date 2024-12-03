@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zenfit/themes/color.dart'; 
 
-final TextStyle TitleStyle = TextStyle(
+TextStyle TitleStyle = const TextStyle(
   color: Color(0xFF000000),
   fontSize: 40,
   fontWeight: FontWeight.bold,
 );
 
-final TextStyle ContentTextStyle = TextStyle(
-  color: Colors.black,
-  fontSize: 18,
-);
+TextStyle ContentTextStyle(BuildContext context) {
+  return TextStyle(
+    color: Theme.of(context).brightness == Brightness.dark 
+      ? Colors.white
+      : Colors.black, 
+    fontSize: 18,
+  );
+}
 
-final TextStyle BleuTitleXSTextStyle = TextStyle(
-  color: const Color(0xFF1A43EE),
-  fontSize: 16,
-  fontWeight: FontWeight.bold,
-);
+TextStyle BleuTitleXSTextStyle(BuildContext context) {
+  Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
 
-final TextStyle whiteTextStyle = TextStyle(
-    color: Colors.white,
+  return TextStyle(
+    color: themeColor,
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
+}
+
+TextStyle whiteTextStyle = const TextStyle(
+  color: Colors.white,
 );

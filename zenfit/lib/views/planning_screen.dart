@@ -149,10 +149,10 @@ class _PlanningScreenState extends State<PlanningScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('Ajouter une nouvelle séance', style: ContentTextStyle),
+          Text('Ajouter une nouvelle séance', style: ContentTextStyle(context)),
           SizedBox(height: 20),
           DropdownButtonFormField<String>(
-            decoration: greyInput.copyWith(labelText: 'Type de séance'),
+            decoration: greyInput(context).copyWith(labelText: 'Type de séance'),
             value: _selectedType,
             items: _types.map((type) {
               return DropdownMenuItem(
@@ -171,9 +171,9 @@ class _PlanningScreenState extends State<PlanningScreen> {
           GestureDetector(
             onTap: _selectDuration,
             child: InputDecorator(
-              decoration: greyInput.copyWith(
+              decoration: greyInput(context).copyWith(
                 labelText: 'Durée de la séance',
-                suffixIcon: timerIconStyle,
+                suffixIcon: timerIconStyle(context),
               ),
               child: Text(
                 '${_selectedDuration.inMinutes} minutes',
@@ -185,14 +185,14 @@ class _PlanningScreenState extends State<PlanningScreen> {
           Expanded(
             child: Container(
               padding: EdgeInsets.all(8),
-              decoration: whiteBox,
+              decoration: whiteBox(context),
               height: 200,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Exercices',
-                    style: BleuTitleXSTextStyle,
+                    style: BleuTitleXSTextStyle(context),
                   ),
                   SizedBox(height: 8),
                   Expanded(
@@ -202,7 +202,7 @@ class _PlanningScreenState extends State<PlanningScreen> {
                         itemBuilder: (context, index) {
                           final exercise = _exercises[index];
                           return Container(
-                            decoration: greyBox,
+                            decoration: greyBox(context),
                             margin: const EdgeInsets.symmetric(vertical: 3),
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                             child: Row(
@@ -215,12 +215,10 @@ class _PlanningScreenState extends State<PlanningScreen> {
                                 if ( _selectedType == 'AMRAP' || _selectedType == 'EMOM')
                                   Text(
                                     '${exercise.number} rep',
-                                    style: TextStyle(color: Colors.black54),
                                   ),
                                 if ( _selectedType == 'HIIT')
                                   Text(
                                     '${exercise.duration.inSeconds} Sec',
-                                    style: TextStyle(color: Colors.black54),
                                   ),
                               ],
                             ),
@@ -240,7 +238,7 @@ class _PlanningScreenState extends State<PlanningScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => navigateToPage(context),
-                  style: WhiteButtonStyle,
+                  style: WhiteButtonStyle(context),
                   child: const Text('+ EXERCICE/PAUSE'),
                 ),
               ),
@@ -249,7 +247,7 @@ class _PlanningScreenState extends State<PlanningScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _validateSeance,
-                  style: BleuButtonStyle,
+                  style: BleuButtonStyle(context),
                   child: const Text('VALIDER LA SÉANCE'),
                 ),
               ),

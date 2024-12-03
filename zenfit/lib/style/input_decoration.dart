@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; 
+import 'package:zenfit/themes/color.dart'; 
 
-final InputDecoration greyInput = InputDecoration(
-  labelStyle: const TextStyle(color: Color(0xFF777777)),
-  filled: true,
-  fillColor: const Color(0xFFEBE9E9),
-  border: InputBorder.none,
-  focusedBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(30.0),
-    borderSide: const BorderSide(color: Colors.transparent),
-  ),
-  enabledBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(30.0),
-    borderSide: const BorderSide(color: Colors.transparent),
-  ),
-  contentPadding: const EdgeInsets.symmetric(horizontal: 20.0)
-);
+InputDecoration greyInput(BuildContext context) {
+  Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
+  
+  return InputDecoration(
+    labelStyle: TextStyle(color: themeColor.withOpacity(0.7)), 
+    filled: true,
+    fillColor: themeColor.withOpacity(0.1), 
+    border: InputBorder.none,
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(30.0),
+      borderSide: BorderSide(color: themeColor),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(30.0),
+      borderSide: BorderSide(color: themeColor),
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+  );
+}

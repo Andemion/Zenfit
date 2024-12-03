@@ -33,7 +33,7 @@ class _EmomWidget extends State<EmomWidget> {
             color: Colors.white,
           ),
         ),
-        iconTheme: whiteIcon,
+        iconTheme: whiteIcon(context),
       ),
       body: Column(
         children: [
@@ -43,7 +43,7 @@ class _EmomWidget extends State<EmomWidget> {
               children: [
                 const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
-                  decoration: greyInput.copyWith(
+                  decoration: greyInput(context).copyWith(
                     labelText: "Sélectionnez un exercice",
                   ),
                   value: _selectedExercise,
@@ -74,7 +74,7 @@ class _EmomWidget extends State<EmomWidget> {
                 Visibility(
                   visible: _selectedExercise == 'Custom',
                   child: TextFormField(
-                    decoration: greyInput.copyWith(
+                    decoration: greyInput(context).copyWith(
                       labelText: "Nom de l'exercice (personnalisé)",
                     ),
                     onChanged: (String value) {
@@ -93,7 +93,7 @@ class _EmomWidget extends State<EmomWidget> {
                 const SizedBox(height: 10),
                 TextFormField(
                   keyboardType: TextInputType.number,
-                  decoration: greyInput.copyWith(
+                  decoration: greyInput(context).copyWith(
                     labelText: 'Nombre de répétitions',
                   ),
                   onChanged: (String value) {
@@ -125,7 +125,7 @@ class _EmomWidget extends State<EmomWidget> {
                     }
                   },
                   child: const Text('Ajouter Exercice EMOM'),
-                  style: BleuButtonStyle,
+                  style: BleuButtonStyle(context),
                 ),
               ],
             ),
