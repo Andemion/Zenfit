@@ -2,21 +2,31 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart'; // Import de provider
+import 'package:zenfit/layout/main_page.dart';
 import 'package:zenfit/views/profil_screen.dart';
-import 'layout/main_page.dart';
-import 'views/onboarding_screen.dart';
-import 'views/home_screen.dart';
-import 'views/registration_screen.dart';
-import 'views/signin_screen.dart';
-import 'views/historic_screen.dart';
-import 'views/planning_screen.dart';
-import 'themes/color.dart';
-import 'themes/dark_mode.dart';
+import 'package:zenfit/views/onboarding_screen.dart';
+import 'package:zenfit/views/home_screen.dart';
+import 'package:zenfit/views/registration_screen.dart';
+import 'package:zenfit/views/signin_screen.dart';
+import 'package:zenfit/views/historic_screen.dart';
+import 'package:zenfit/views/planning_screen.dart';
+import 'package:zenfit/themes/color.dart';
+import 'package:zenfit/themes/dark_mode.dart';
 import 'package:zenfit/models/session_model.dart';
+import 'package:zenfit/db/database_helper.dart';
+import 'package:zenfit/db/initialize_exercises.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  // Initialiser la base de données
+  final db = await DatabaseHelper.instance.database;
+
+  // Vous pouvez effectuer des opérations si nécessaire, par exemple initialiser des données
+  print('Base de données initialisée : $db');
+
+  await initializeExercises();
   runApp(const MyApp());
 }
 

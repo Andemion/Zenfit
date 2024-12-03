@@ -1,67 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:zenfit/models/session_model.dart';
-import 'package:zenfit/models/exercices_model.dart';
+import 'package:zenfit/models/exercises_model.dart';
+import 'package:zenfit/db/sessions_database.dart';
 
-class HomeScreen extends StatelessWidget {
-
-
-
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final sessionDatabase = SessionDatabase();
+  List<Session> todaySessions = [];
+  List<Session> weekSessions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getFilteredSessions();
+  }
+
+  Future<void> getFilteredSessions() async {
+    // Lire toutes les sessions
+    final sessionList = await sessionDatabase.readAllSessions();
+
+    // Filtrer les sessions pour "aujourd'hui"
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    setState(() {
+      todaySessions = sessionList.where((session) {
+        final sessionDate = DateTime(session.date.year, session.date.month, session.date.day);
+        return sessionDate == today;
+      }).toList();
+
+      // Filtrer les sessions pour la semaine
+      final weekStart = today.subtract(Duration(days: today.weekday - 1));
+      final weekEnd = weekStart.add(Duration(days: 6));
+      weekSessions = sessionList.where((session) {
+        final sessionDate = DateTime(session.date.year, session.date.month, session.date.day);
+        return sessionDate.isAfter(weekStart) && sessionDate.isBefore(weekEnd.add(Duration(days: 1)));
+      }).toList();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-
-    final List<Session> sessionList = [];
-
-    if (sessionList.isEmpty) {
-      sessionList.addAll([
-        Session(
-          name: 'Morning Cardio',
-          sessionType: 'Renforcement cardio',
-          duration: Duration(minutes: 45),
-          exercises: [
-            Exercise(name: 'Jumping Jacks', number: 20, duration: Duration(seconds: 30)),
-          ],
-          date: DateTime.now().add(Duration(hours: 2)), // Aujourd'hui
-          reminder: 15,
-        ),
-        Session(
-          name: 'Muscle Strength',
-          sessionType: 'Renforcement musculaire',
-          duration: Duration(minutes: 60),
-          exercises: [
-            Exercise(name: 'Push-ups', number: 15, duration: Duration(seconds: 40)),
-          ],
-          date: DateTime.now().add(Duration(days: 1, hours: 3)), // Demain
-          reminder: 10,
-        ),
-        Session(
-          name: 'Evening Cardio',
-          sessionType: 'Renforcement cardio',
-          duration: Duration(minutes: 50),
-          exercises: [
-            Exercise(name: 'Running', number: 1, duration: Duration(minutes: 30)),
-          ],
-          date: DateTime.now().add(Duration(days: 3, hours: 5)), // Plus tard dans la semaine
-          reminder: 20,
-        ),
-      ]);
-    }
-
-    // Filtrer les séances pour "aujourd'hui"
-    final today = DateTime.now();
-    final todaySessions = sessionList.where((session) {
-      return session.date.year == today.year &&
-          session.date.month == today.month &&
-          session.date.day == today.day;
-    }).toList();
-
-    // Séances de la semaine (sans celles d'aujourd'hui)
-    final weekSessions = sessionList.where((session) {
-      final difference = session.date.difference(today).inDays;
-      return difference >= 1 && difference <= 7;
-    }).toList();
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),

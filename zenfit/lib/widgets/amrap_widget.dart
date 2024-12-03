@@ -4,7 +4,8 @@ import 'package:zenfit/style/button_style.dart';
 import 'package:zenfit/style/text_style.dart';
 import 'package:zenfit/style/input_decoration.dart';
 import 'package:zenfit/style/icon_theme.dart';
-import 'package:zenfit/models/exercices_model.dart';
+import 'package:zenfit/models/exercises_model.dart';
+import 'package:zenfit/db/exercises_database.dart';
 
 class AmrapWidget extends StatefulWidget {
   final Function(Exercise) onExerciseAdded;
@@ -16,12 +17,28 @@ class AmrapWidget extends StatefulWidget {
 }
 
 class _AmrapWidget extends State<AmrapWidget> {
+
+  final exerciseDatabase = ExerciseDatabase();
+  List<Exercise> exerciseList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getExercises();
+  }
+
+  Future<void> getExercises() async {
+    final exercisesDB = await exerciseDatabase.readAllExercises();
+    setState(() {
+      exerciseList = exercisesDB;
+    });
+  }
+
   Duration _exerciseTime = Duration(minutes: 0);
   final _formKey = GlobalKey<FormState>();
   String _exerciseName = '';
   int _exerciseNumber = 0;
   String? _selectedExercise;
-  final List<String> _exerciseList = ['Abdo', 'Pompe', 'Squat', 'Custom'];
 
   @override
   Widget build(BuildContext context) {
@@ -47,17 +64,17 @@ class _AmrapWidget extends State<AmrapWidget> {
                     labelText: "Sélectionnez un exercice",
                   ),
                   value: _selectedExercise,
-                  items: _exerciseList.map((String exercise) {
-                    return DropdownMenuItem(
-                      value: exercise,
-                      child: Text(exercise),
+                  items: exerciseList.map((exercise) {
+                    return DropdownMenuItem<String>(
+                      value: exercise.name, // La valeur sera le nom de l'exercice
+                      child: Text('${exercise.name} / ${exercise.number} rep'),
                     );
                   }).toList(),
                   onChanged: (String? value) {
                     setState(() {
                       _selectedExercise = value;
-                      if (value != 'Custom') {
-                        _exerciseName = value ?? '';
+                      if (value != null && value != 'Custom') {
+                        _exerciseName = value;
                       } else {
                         _exerciseName = '';
                       }

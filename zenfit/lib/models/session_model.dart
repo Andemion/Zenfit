@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zenfit/models/exercices_model.dart';
+import 'package:zenfit/models/exercises_model.dart';
 import 'package:zenfit/db/database_helper.dart';
 
 class Session {
