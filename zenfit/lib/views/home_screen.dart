@@ -16,8 +16,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final sessionDatabase = SessionDatabase();
   List<Session> todaySessions = [];
   List<Session> weekSessions = [];
-  // Récupération de la couleur du thème via le provider
-  Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
 
   @override
   void initState() {
@@ -51,6 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),

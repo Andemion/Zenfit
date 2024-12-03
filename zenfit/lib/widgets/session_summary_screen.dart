@@ -162,7 +162,7 @@ class SummaryScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PlanningScreen(), // Redirection vers l'écran PlanningScreen
+                      builder: (context) => const PlanningScreen(), // Redirection vers l'écran PlanningScreen
                     ),
                   );
                 },
