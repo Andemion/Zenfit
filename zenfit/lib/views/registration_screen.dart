@@ -77,7 +77,7 @@ Future<void> _googleLogin() async {
       Navigator.of(context).pushReplacementNamed('/main');
     }
   } catch (error) {
-    print('Erreur lors de la connexion avec Google: $error'); // Gérez les erreurs ici
+    print('Erreur lors de la connexion avec Google: $error');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Erreur lors de la connexion avec Google')),
     );

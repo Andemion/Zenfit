@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:zenfit/widgets/bottom_bar.dart';
-import 'package:provider/provider.dart'; // Import de provider
-import 'package:zenfit/themes/color.dart'; // Import du ThemeColorProvider
+import 'package:provider/provider.dart'; 
+import 'package:zenfit/themes/color.dart'; 
 import 'package:zenfit/themes/dark_mode.dart';
 
 class ProfilScreen extends StatefulWidget {
@@ -13,7 +12,7 @@ class ProfilScreen extends StatefulWidget {
 }
 
 class _ProfilScreenState extends State<ProfilScreen> {
-  String selectedColorTheme = 'Bleu'; // Valeur par défaut
+  String selectedColorTheme = 'Bleu'; 
   String email = '';
 
   @override
@@ -22,30 +21,26 @@ class _ProfilScreenState extends State<ProfilScreen> {
     _loadUserData();
   }
 
-  // Récupérer l'email de l'utilisateur connecté
   void _loadUserData() {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       setState(() {
-        email = user.email ?? ''; // On récupère l'email de l'utilisateur connecté
+        email = user.email ?? '';
       });
     }
   }
 
-  // Fonction pour se déconnecter
   Future<void> _signOut() async {
     await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(context, '/signin'); // Redirige vers la page de connexion
+    Navigator.pushReplacementNamed(context, '/signin');
   }
 
   @override
   Widget build(BuildContext context) {
-    // Récupération de l'état du mode sombre via le provider
     bool isDarkMode = context.watch<DarkModeProvider>().isDarkMode;
     Color textColor = isDarkMode ? Colors.white : Colors.black;
     Color backgroundColor = isDarkMode ? Colors.grey[800]! : Colors.grey[200]!;
 
-    // Récupérer la couleur du thème sélectionné à partir du ThemeColorProvider
     Color themeColor = context.watch<ThemeColorProvider>().themeColor;
 
     return Scaffold(
@@ -59,14 +54,13 @@ class _ProfilScreenState extends State<ProfilScreen> {
               style: TextStyle(fontSize: 16, color: textColor),
             ),
             const SizedBox(height: 30),
-            // Champ Email prérempli avec l'email de l'utilisateur
             TextField(
               controller: TextEditingController(text: email),
-              enabled: false, // Le champ est en lecture seule (non modifiable)
+              enabled: false,
               decoration: InputDecoration(
                 hintText: email.isEmpty ? 'test@zenfit.com' : email,
                 filled: true,
-                fillColor: backgroundColor, // Couleur de fond dynamique
+                fillColor: backgroundColor,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
@@ -91,13 +85,12 @@ class _ProfilScreenState extends State<ProfilScreen> {
                 Switch(
                   value: isDarkMode,
                   onChanged: (value) {
-                    context.read<DarkModeProvider>().toggleDarkMode(); // Mise à jour du mode sombre
+                    context.read<DarkModeProvider>().toggleDarkMode();
                   },
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            // Sélection du thème de couleur
             DropdownButtonFormField<String>(
               value: selectedColorTheme,
               items: ['Bleu', 'Rouge', 'Vert'].map((String value) {
@@ -109,7 +102,6 @@ class _ProfilScreenState extends State<ProfilScreen> {
               onChanged: (newValue) {
                 setState(() {
                   selectedColorTheme = newValue!;
-                  // Mettre à jour la couleur du thème via le ThemeColorProvider
                   context.read<ThemeColorProvider>().updateThemeColor(newValue);
                 });
               },
@@ -124,12 +116,11 @@ class _ProfilScreenState extends State<ProfilScreen> {
               style: TextStyle(color: textColor),
             ),
             const SizedBox(height: 30),
-            // Bouton de déconnexion centré avec padding supplémentaire
             Center(
               child: ElevatedButton(
                 onPressed: _signOut,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: themeColor, // Utiliser la couleur du thème pour le bouton
+                  backgroundColor: themeColor,
                   padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
                 ),
                 child: const Text(
@@ -141,7 +132,6 @@ class _ProfilScreenState extends State<ProfilScreen> {
           ],
         ),
       ),
-// Assurez-vous que votre BottomBar utilise également la couleur du thème
     );
   }
 }
