@@ -33,7 +33,7 @@ class _HiitWidget extends State<HiitWidget> {
             color: Colors.white,
           ),
         ),
-        iconTheme: whiteIcon,
+        iconTheme: whiteIcon(context),
       ),
       body: Column(
         children: [
@@ -60,7 +60,7 @@ class _HiitWidget extends State<HiitWidget> {
               children: [
                 const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
-                  decoration: greyInput.copyWith(
+                  decoration: greyInput(context).copyWith(
                     labelText: "Sélectionnez un exercice",
                   ),
                   value: _selectedExercise,
@@ -91,7 +91,7 @@ class _HiitWidget extends State<HiitWidget> {
                 Visibility(
                   visible: _selectedExercise == 'Custom',
                   child: TextFormField(
-                    decoration: greyInput.copyWith(
+                    decoration: greyInput(context).copyWith(
                       labelText: "Nom de l'exercice (personnalisé)",
                     ),
                     onChanged: (String value) {
@@ -127,7 +127,7 @@ class _HiitWidget extends State<HiitWidget> {
                     }
                   },
                   child: const Text('Ajouter Exercice HIIT'),
-                  style: BleuButtonStyle,
+                  style: BleuButtonStyle(context),
                 ),
               ],
             ),

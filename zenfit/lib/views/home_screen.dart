@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; 
 import 'package:zenfit/models/session_model.dart';
+import 'package:zenfit/themes/color.dart'; // Assurez-vous d'importer le ThemeColorProvider
 import 'package:zenfit/models/exercises_model.dart';
 import 'package:zenfit/db/sessions_database.dart';
 
@@ -14,6 +16,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final sessionDatabase = SessionDatabase();
   List<Session> todaySessions = [];
   List<Session> weekSessions = [];
+  // Récupération de la couleur du thème via le provider
+  Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
 
   @override
   void initState() {
@@ -65,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: todaySessions.length,
                 itemBuilder: (context, index) {
                   final session = todaySessions[index];
-                  return _buildSessionTile(session, isToday: true);
+                  return _buildSessionTile(session, isToday: true, themeColor: themeColor);
                 },
               )
             else
@@ -86,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: weekSessions.length,
                 itemBuilder: (context, index) {
                   final session = weekSessions[index];
-                  return _buildSessionTile(session);
+                  return _buildSessionTile(session, themeColor: themeColor);
                 },
               )
             else
@@ -100,10 +104,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSessionTile(Session session, {bool isToday = false}) {
+  Widget _buildSessionTile(Session session, {bool isToday = false, required Color themeColor}) {
     return Container(
       decoration: BoxDecoration(
-        color: isToday ? Colors.blue : const Color(0xFFEBE9E9),
+        color: isToday ? themeColor : const Color(0xFFEBE9E9), // Application de la couleur dynamique
         borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -119,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: isToday ? Colors.white : Colors.blue,
+                  color: isToday ? Colors.white : themeColor, // Changer la couleur en fonction de la condition
                 ),
               ),
               const SizedBox(height: 4),

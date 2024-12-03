@@ -50,7 +50,7 @@ class _AmrapWidget extends State<AmrapWidget> {
             color: Colors.white,
           ),
         ),
-        iconTheme: whiteIcon,
+        iconTheme: whiteIcon(context),
       ),
       body: Column(
         children: [
@@ -60,7 +60,7 @@ class _AmrapWidget extends State<AmrapWidget> {
               children: [
                 const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
-                  decoration: greyInput.copyWith(
+                  decoration: greyInput(context).copyWith(
                     labelText: "Sélectionnez un exercice",
                   ),
                   value: _selectedExercise,
@@ -91,7 +91,7 @@ class _AmrapWidget extends State<AmrapWidget> {
                 Visibility(
                   visible: _selectedExercise == 'Custom',
                   child: TextFormField(
-                    decoration: greyInput.copyWith(
+                    decoration: greyInput(context).copyWith(
                       labelText: "Nom de l'exercice (personnalisé)",
                     ),
                     onChanged: (String value) {
@@ -110,7 +110,7 @@ class _AmrapWidget extends State<AmrapWidget> {
                 const SizedBox(height: 10),
                 TextFormField(
                   keyboardType: TextInputType.number,
-                  decoration: greyInput.copyWith(
+                  decoration: greyInput(context).copyWith(
                     labelText: 'Nombre de répétitions',
                   ),
                   onChanged: (String value) {
@@ -142,7 +142,7 @@ class _AmrapWidget extends State<AmrapWidget> {
                     }
                   },
                   child: const Text('Ajouter Exercice AMRAP'),
-                  style: BleuButtonStyle,
+                  style: BleuButtonStyle(context),
                 ),
               ],
             ),

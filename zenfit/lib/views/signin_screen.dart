@@ -37,18 +37,14 @@ class _SigninScreenState extends State<SigninScreen> {
     }
 
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      User? user = userCredential.user;
-      if (user != null) {
-    print("Connexion réussie pour : ${user.email}");
-    Navigator.of(context).pushReplacementNamed('/main');
-  } else {
-    print("L'utilisateur est null après la connexion.");
-  }
+      print("Tentative de connexion avec email : $email");
+  UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+    email: email,
+    password: password,
+  );
+  print("Connexion réussie pour l'utilisateur : ${userCredential.user?.email}");
+  // Navigation si succès
+  Navigator.of(context).pushReplacementNamed('/main');
     } on FirebaseAuthException catch (e) {
       String message = 'Erreur inconnue';
       if (e.code == 'wrong-password') {
@@ -118,7 +114,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 const SizedBox(height: 10),
                 Text(
                   'Connectez-vous à ZenFit !',
-                  style: ContentTextStyle,
+                  style: ContentTextStyle(context),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),
@@ -126,7 +122,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: TextField(
                     controller: _emailController,
-                    decoration: greyInput.copyWith(
+                    decoration: greyInput(context).copyWith(
                       labelText: 'Email'
                     ),
                     style: const TextStyle(color: Colors.black),
@@ -138,7 +134,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   child: TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: greyInput.copyWith(
+                    decoration: greyInput(context).copyWith(
                       labelText: 'Mot de passe'
                     ),
                     style: const TextStyle(color: Colors.black),
@@ -147,7 +143,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: _signin,
-                  style: BleuButtonStyle,
+                  style: BleuButtonStyle(context),
                   child: const Text(
                     'CONNEXION',
                     style: TextStyle(fontSize: 16),
