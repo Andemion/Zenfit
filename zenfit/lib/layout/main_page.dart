@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import du package Provider
 import 'package:zenfit/views/home_screen.dart';
 import 'package:zenfit/views/planning_screen.dart';
 import 'package:zenfit/views/historic_screen.dart';
 import 'package:zenfit/views/profil_screen.dart';
 import 'package:zenfit/widgets/bottom_bar.dart';
-import 'package:provider/provider.dart'; // Import du package Provider
 import 'package:zenfit/themes/color.dart'; // Import de ThemeColorProvider
+import 'package:zenfit/models/session_model.dart';
+import 'package:zenfit/models/exercices_model.dart';
 
 class MainPage extends StatefulWidget {
+
   const MainPage({super.key});
 
   @override
@@ -15,6 +18,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
   int _selectedIndex = 0; // Index initial de la page (HomeScreen)
 
   // Liste des pages
