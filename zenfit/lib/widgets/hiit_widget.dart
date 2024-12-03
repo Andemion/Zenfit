@@ -4,7 +4,7 @@ import 'package:zenfit/style/button_style.dart';
 import 'package:zenfit/style/text_style.dart';
 import 'package:zenfit/style/input_decoration.dart';
 import 'package:zenfit/style/icon_theme.dart';
-import 'package:zenfit/models/exercices_model.dart';
+import 'package:zenfit/models/exercises_model.dart';
 
 class HiitWidget extends StatefulWidget {
   final Function(Exercise) onExerciseAdded;

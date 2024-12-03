@@ -1,5 +1,5 @@
 import 'package:zenfit/models/session_model.dart';
-import 'package:zenfit/models/exercices_model.dart';
+import 'package:zenfit/models/exercises_model.dart';
 import 'database_helper.dart';
 
 class SessionDatabase {
@@ -11,6 +11,12 @@ class SessionDatabase {
 
     // Insérer la session dans la table sessions
     final sessionId = await db.insert('sessions', session.toJson());
+
+    if (sessionId > 0) {
+      print('Session enregistrée avec succès. ID de la session : $sessionId');
+    } else {
+      print('Erreur lors de l\'enregistrement de la session.');
+    }
 
     // Insérer les relations entre la session et les exercices
     for (final exercise in session.exercises) {

@@ -7,7 +7,7 @@ import 'package:zenfit/views/profil_screen.dart';
 import 'package:zenfit/widgets/bottom_bar.dart';
 import 'package:zenfit/themes/color.dart'; // Import de ThemeColorProvider
 import 'package:zenfit/models/session_model.dart';
-import 'package:zenfit/models/exercices_model.dart';
+import 'package:zenfit/models/exercises_model.dart';
 
 class MainPage extends StatefulWidget {
 

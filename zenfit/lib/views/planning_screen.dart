@@ -8,8 +8,9 @@ import 'package:zenfit/widgets/amrap_widget.dart';
 import 'package:zenfit/widgets/hiit_widget.dart';
 import 'package:zenfit/widgets/emom_widget.dart';
 import 'package:zenfit/widgets/planify_session_widget.dart';
-import 'package:zenfit/models/exercices_model.dart';
+import 'package:zenfit/models/exercises_model.dart';
 import 'package:zenfit/models/session_model.dart';
+import 'package:zenfit/db/sessions_database.dart';
 
 class PlanningScreen extends StatefulWidget {
 
@@ -22,7 +23,23 @@ class PlanningScreen extends StatefulWidget {
 
 class _PlanningScreenState extends State<PlanningScreen> {
 
-  final List<Session> sessionList = [];
+  final sessionDatabase = SessionDatabase();
+  List<Session> sessionList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getSessions();
+  }
+
+  Future<void> getSessions() async {
+    // Lire toutes les sessions
+    final sessionDB = await sessionDatabase.readAllSessions();
+    setState(() {
+      sessionList = sessionDB;
+    });
+  }
+
   String _sessionName = '';
   String? _selectedType;
   Duration _selectedDuration = Duration(minutes: 0);
@@ -110,40 +127,6 @@ class _PlanningScreenState extends State<PlanningScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (sessionList.isEmpty) {
-      sessionList.addAll([
-        Session(
-          name: 'Morning Cardio',
-          sessionType: 'Renforcement cardio',
-          duration: Duration(minutes: 45),
-          exercises: [
-            Exercise(name: 'Jumping Jacks', number: 20, duration: Duration(seconds: 30)),
-          ],
-          date: DateTime.now().add(Duration(hours: 2)), // Aujourd'hui
-          reminder: 15,
-        ),
-        Session(
-          name: 'Muscle Strength',
-          sessionType: 'Renforcement musculaire',
-          duration: Duration(minutes: 60),
-          exercises: [
-            Exercise(name: 'Push-ups', number: 15, duration: Duration(seconds: 40)),
-          ],
-          date: DateTime.now().add(Duration(days: 1, hours: 3)), // Demain
-          reminder: 10,
-        ),
-        Session(
-          name: 'Evening Cardio',
-          sessionType: 'Renforcement cardio',
-          duration: Duration(minutes: 50),
-          exercises: [
-            Exercise(name: 'Running', number: 1, duration: Duration(minutes: 30)),
-          ],
-          date: DateTime.now().add(Duration(days: 3, hours: 5)), // Plus tard dans la semaine
-          reminder: 20,
-        ),
-      ]);
-    }
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(

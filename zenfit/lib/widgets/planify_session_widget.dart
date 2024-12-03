@@ -5,6 +5,7 @@ import 'package:zenfit/style/input_decoration.dart';
 import 'package:zenfit/style/icon_theme.dart';
 import 'package:zenfit/models/session_model.dart';
 import 'package:zenfit/views/home_screen.dart';
+import 'package:zenfit/db/sessions_database.dart';
 
 
 class PlanifySessionWidget extends StatefulWidget {
@@ -19,13 +20,13 @@ class PlanifySessionWidget extends StatefulWidget {
 }
 
 class _PlanifySessionWidget extends State<PlanifySessionWidget> {
-  final TextEditingController _sessionNameController = TextEditingController();
+  final sessionDatabase = SessionDatabase();
   String _sessionName = "";
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  int _selectedReminder = 0;
+  int _selectedReminder = 1;
 
-  final List<int> _reminderOptions = [5 , 15 , 30, 45];
+  final List<int> _reminderOptions = [1, 5 , 15 , 30, 45];
 
   void _selectDate() async {
     final DateTime? pickedDate = await showDatePicker(
@@ -56,7 +57,7 @@ class _PlanifySessionWidget extends State<PlanifySessionWidget> {
   }
 
   void _submitSession() {
-    if (_sessionNameController.text.isEmpty) {
+    if (_sessionName == "") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Veuillez entrer le nom de la séance')),
       );
@@ -100,13 +101,10 @@ class _PlanifySessionWidget extends State<PlanifySessionWidget> {
     );
 
     setState(() {
-      widget.sessionList.add(addSession);
+      sessionDatabase.createSession(addSession);
     });
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
-    );
+    Navigator.of(context).pushReplacementNamed( '/main');
   }
 
   @override
