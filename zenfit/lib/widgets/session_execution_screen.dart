@@ -7,6 +7,10 @@ class SessionExecutionScreen extends StatefulWidget {
   final int duration;
   final String type;
   final List<Map<String, dynamic>> exercices;
+  final DateTime sessionDate;
+  final int? sessionId;
+  final int sessionReminder;
+
 
   const SessionExecutionScreen({
     Key? key,
@@ -14,6 +18,9 @@ class SessionExecutionScreen extends StatefulWidget {
     required this.duration,
     required this.type,
     required this.exercices,
+    required this.sessionDate,
+    required this.sessionId,
+    required this.sessionReminder,
   }) : super(key: key);
 
   @override
@@ -74,8 +81,11 @@ class _SessionExecutionScreenState extends State<SessionExecutionScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => SessionEndScreen(
+          sessionId: widget.sessionId,
           type: widget.type,
           sessionName: widget.title,
+          sessionDate: widget.sessionDate,
+          sessionReminder: widget.sessionReminder,
           exercises: widget.exercices,
           sessionDuration: widget.duration,
         ),

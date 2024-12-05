@@ -6,6 +6,9 @@ class SessionStartScreen extends StatelessWidget {
   final int duration;
   final String type;
   final List<Map<String, dynamic>> exercises; // Liste des exercices
+  final DateTime sessionDate;
+  final int? sessionId;
+  final int sessionReminder;
 
   const SessionStartScreen({
     Key? key,
@@ -13,6 +16,9 @@ class SessionStartScreen extends StatelessWidget {
     required this.duration,
     required this.type,
     required this.exercises, // Ajout de l'argument exercises
+    required this.sessionDate,
+    required this.sessionId,
+    required this.sessionReminder,
   }) : super(key: key);
 
   @override
@@ -58,6 +64,9 @@ class SessionStartScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => SessionExecutionScreen(
+                      sessionDate: sessionDate,
+                      sessionId: sessionId,
+                      sessionReminder: sessionReminder,
                       title: title,
                       duration: duration,
                       type: type,
