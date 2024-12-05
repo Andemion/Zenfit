@@ -146,7 +146,7 @@ class SummaryScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  comment.isNotEmpty ? comment : 'Bonne séance, à refaire.',
+                  comment.isNotEmpty ? comment : 'Pas de commentaire',
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16),
                 ),

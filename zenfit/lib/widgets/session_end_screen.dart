@@ -201,7 +201,7 @@ class _SessionEndScreenState extends State<SessionEndScreen> {
               ],
 
               // Section HIIT et EMON : Répétitions
-              if (widget.type == 'HIIT' || widget.type == 'EMON') ...[
+              if (widget.type == 'HIIT' || widget.type == 'EMOM') ...[
                 Text(
                   'Répétitions par exercice',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

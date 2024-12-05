@@ -31,6 +31,7 @@ class ExerciseDatabase {
         'number': exercise.number,
         'duration': exercise.duration.inSeconds, // Sauvegarder la durée en secondes
       });
+      print(exercise.name);
       print('Exercice sauvegardé dans la base de données.');
     } else {
       updateExercise(existsId, exercise);
