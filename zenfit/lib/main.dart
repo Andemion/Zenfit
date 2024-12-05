@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart'; // Import de provider
+import 'package:zenfit/db/exercises_database.dart';
 import 'package:zenfit/layout/main_page.dart';
 import 'package:zenfit/views/profil_screen.dart';
 import 'package:zenfit/views/onboarding_screen.dart';
@@ -26,7 +27,7 @@ Future<void> initializeApp(exerciseDatabase) async {
 }
 
 void main() async {
-  final exerciseDatabase = ExerciseDatabaseInterface();
+  final exerciseDatabase = ExerciseDatabase();
   await initializeApp(exerciseDatabase);
   runApp(const MyApp());
 }

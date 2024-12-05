@@ -88,7 +88,6 @@ class _AmrapWidget extends State<AmrapWidget> {
                         _isCustomExercise = _exerciseName == "Custom";
                         // Mettre à jour le contrôleur pour afficher les répétitions sélectionnées
                         _repetitionController.text = _exerciseNumber.toString();
-
                       } else {
                         _exerciseName = '';
                         _exerciseNumber = 0; // Réinitialiser pour "Custom"
@@ -113,7 +112,6 @@ class _AmrapWidget extends State<AmrapWidget> {
                     ),
                     onChanged: (String value) {
                       setState(() {
-                        _selectedExerciseId = null;
                         _exerciseName = value;
                       });
                     },
@@ -149,19 +147,21 @@ class _AmrapWidget extends State<AmrapWidget> {
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {  // Marquer cette fonction comme 'async'
                     if (_formKey.currentState!.validate()) {
-
+                      if (_selectedExerciseId == 1) {
+                          _selectedExerciseId = null;
+                        }
                       final newExercise = Exercise(
-                        id: _selectedExerciseId, // Ajouter l'id sélectionné
+                        id: _selectedExerciseId,
                         name: _exerciseName,
                         number: _exerciseNumber,
                         duration: _exerciseTime,
                       );
 
                       // Sauvegarde l'exercice si non existant
-                      _selectedExerciseId = exerciseDatabase.saveExerciseIfNotExists(newExercise);
-                      newExercise.id = _selectedExerciseId;
+                      final savedId = await exerciseDatabase.saveExerciseIfNotExists(newExercise);
+                      newExercise.id = savedId; // Assigner l'ID après la sauvegarde
                       widget.onExerciseAdded(newExercise);
                       Navigator.pop(context);
                     }

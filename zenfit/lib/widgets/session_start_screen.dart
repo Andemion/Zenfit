@@ -5,12 +5,14 @@ class SessionStartScreen extends StatelessWidget {
   final String title;
   final int duration;
   final String type;
+  final List<Map<String, dynamic>> exercises; // Liste des exercices
 
   const SessionStartScreen({
     Key? key,
     required this.title,
     required this.duration,
     required this.type,
+    required this.exercises, // Ajout de l'argument exercises
   }) : super(key: key);
 
   @override
@@ -18,10 +20,14 @@ class SessionStartScreen extends StatelessWidget {
     Color themeColor = Theme.of(context).primaryColor;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(title, style: const TextStyle(color: Colors.white)),
+        backgroundColor: themeColor,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start, 
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
@@ -47,6 +53,7 @@ class SessionStartScreen extends StatelessWidget {
             const SizedBox(height: 50),
             ElevatedButton(
               onPressed: () {
+                // Navigation vers SessionExecutionScreen avec la liste d'exercices
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -54,6 +61,7 @@ class SessionStartScreen extends StatelessWidget {
                       title: title,
                       duration: duration,
                       type: type,
+                      exercices: exercises, // Passez la liste des exercices
                     ),
                   ),
                 );

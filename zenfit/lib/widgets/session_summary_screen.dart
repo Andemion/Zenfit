@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zenfit/layout/main_page.dart';
 import 'package:zenfit/views/planning_screen.dart';
 
 class SummaryScreen extends StatelessWidget {
@@ -146,7 +147,7 @@ class SummaryScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  comment.isNotEmpty ? comment : 'Bonne séance, à refaire.',
+                  comment.isNotEmpty ? comment : 'Pas de commentaire',
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16),
                 ),
@@ -162,7 +163,7 @@ class SummaryScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const PlanningScreen(), // Redirection vers l'écran PlanningScreen
+                      builder: (context) => const MainPage(), // Redirection vers l'écran PlanningScreen
                     ),
                   );
                 },
@@ -174,7 +175,7 @@ class SummaryScreen extends StatelessWidget {
                   ),
                 ),
                 child: const Text(
-                  'Programmer une nouvelle séance',
+                  'Voir mes prochaines séances',
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),

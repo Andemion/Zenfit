@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; 
-import 'package:zenfit/models/session_model.dart';
-import 'package:zenfit/themes/color.dart'; // Assurez-vous d'importer le ThemeColorProvider
-import 'package:zenfit/models/exercises_model.dart';
 import 'package:zenfit/db/sessions_database.dart';
+import 'package:zenfit/models/session_model.dart';
+import 'package:zenfit/widgets/session_start_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -24,10 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getFilteredSessions() async {
-    // Lire toutes les sessions
     final sessionList = await sessionDatabase.readAllSessions();
 
-    // Filtrer les sessions pour "aujourd'hui"
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
@@ -49,8 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    Color themeColor = Provider.of<ThemeColorProvider>(context).themeColor;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,14 +63,37 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: todaySessions.length,
                 itemBuilder: (context, index) {
                   final session = todaySessions[index];
-                  return _buildSessionTile(session, isToday: true, themeColor: themeColor);
+                  return GestureDetector(
+                    onTap: () async {
+                      // Récupérer les exercices associés à la session sélectionnée
+                      final sessionWithExercises = await sessionDatabase.readAllSessions();
+                      final selectedSession = sessionWithExercises.firstWhere((e) => e.id == session.id);
+
+                      // Passer les exercices de la session à la page d'exécution
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SessionStartScreen(
+                            title: selectedSession.name,
+                            duration: selectedSession.duration.inMinutes,
+                            type: selectedSession.sessionType,
+                            exercises: selectedSession.exercises.map((e) {
+                              return {
+                                'name': e.name,
+                                'reps': e.number,
+                                'duration': e.duration.inSeconds,
+                              };
+                            }).toList(),
+                          ),
+                        ),
+                      );
+                    },
+                    child: _buildSessionTile(session, isToday: true),
+                  );
                 },
               )
             else
-              const Text(
-                'Aucune séance pour aujourd\'hui.',
-                style: TextStyle(color: Colors.black54),
-              ),
+              const Text('Aucune séance pour aujourd\'hui.'),
             const SizedBox(height: 20),
             const Text(
               'Vos séances de la semaine',
@@ -90,24 +107,48 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: weekSessions.length,
                 itemBuilder: (context, index) {
                   final session = weekSessions[index];
-                  return _buildSessionTile(session, themeColor: themeColor);
+                  return GestureDetector(
+                    onTap: () async {
+                      // Récupérer les exercices associés à la session sélectionnée
+                      final sessionWithExercises = await sessionDatabase.readAllSessions();
+                      final selectedSession = sessionWithExercises.firstWhere((e) => e.id == session.id);
+
+                      // Passer les exercices de la session à la page d'exécution
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SessionStartScreen(
+                            title: selectedSession.name,
+                            duration: selectedSession.duration.inMinutes,
+                            type: selectedSession.sessionType,
+                            exercises: selectedSession.exercises.map((e) {
+                              return {
+                                'name': e.name,
+                                'reps': e.number,
+                                'duration': e.duration.inSeconds,
+                              };
+                            }).toList(),
+                          ),
+                        ),
+                      );
+                    },
+                    child: _buildSessionTile(session),
+                  );
                 },
               )
             else
-              const Text(
-                'Aucune séance prévue cette semaine.',
-                style: TextStyle(color: Colors.black54),
-              ),
+              const Text('Aucune séance pour cette semaine.'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSessionTile(Session session, {bool isToday = false, required Color themeColor}) {
+  Widget _buildSessionTile(Session session, {bool isToday = false}) {
+    Color themeColor = Theme.of(context).primaryColor;  // Utilisation de la couleur thème actuelle
     return Container(
       decoration: BoxDecoration(
-        color: isToday ? themeColor : const Color(0xFFEBE9E9), // Application de la couleur dynamique
+        color: isToday ? themeColor : const Color(0xFFEBE9E9),
         borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -123,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: isToday ? Colors.white : themeColor, // Changer la couleur en fonction de la condition
+                  color: isToday ? Colors.white : themeColor,
                 ),
               ),
               const SizedBox(height: 4),
@@ -157,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'Avril',
       'Mai',
       'Juin',
-      'Juil',
+      'Juillet',
       'Août',
       'Sept',
       'Oct',
