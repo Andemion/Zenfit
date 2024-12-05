@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:zenfit/db/initialize_exercises.dart';
 import 'mock.mocks.dart';
+import 'package:zenfit/db/initialize_exercises.dart';
 import 'package:zenfit/db/interfaces/exercise_database_interface.dart';
 
 void main() {

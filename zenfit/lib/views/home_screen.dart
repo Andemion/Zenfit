@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:zenfit/db/sessions_database.dart';
 import 'package:zenfit/models/session_model.dart';
 import 'package:zenfit/widgets/session_start_screen.dart';
+import 'package:zenfit/db/interfaces/sessions_database_interface.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final SessionDatabaseInterface? sessionDatabase;
+  const HomeScreen({Key? key, this.sessionDatabase}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();

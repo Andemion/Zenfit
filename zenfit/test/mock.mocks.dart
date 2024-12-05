@@ -3,11 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:zenfit/db/interfaces/exercise_database_interface.dart' as _i2;
-import 'package:zenfit/models/exercises_model.dart' as _i4;
+import 'package:sqflite/sqflite.dart' as _i2;
+import 'package:zenfit/db/interfaces/database_helper_interface.dart' as _i6;
+import 'package:zenfit/db/interfaces/exercise_database_interface.dart' as _i3;
+import 'package:zenfit/db/interfaces/sessions_database_interface.dart' as _i7;
+import 'package:zenfit/models/exercises_model.dart' as _i5;
+import 'package:zenfit/models/session_model.dart' as _i8;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -22,57 +26,67 @@ import 'package:zenfit/models/exercises_model.dart' as _i4;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeDatabase_0 extends _i1.SmartFake implements _i2.Database {
+  _FakeDatabase_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [ExerciseDatabaseInterface].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockExerciseDatabaseInterface extends _i1.Mock
-    implements _i2.ExerciseDatabaseInterface {
+    implements _i3.ExerciseDatabaseInterface {
   MockExerciseDatabaseInterface() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<int?> findExerciseIdByName(String? name) => (super.noSuchMethod(
+  _i4.Future<int?> findExerciseIdByName(String? name) => (super.noSuchMethod(
         Invocation.method(
           #findExerciseIdByName,
           [name],
         ),
-        returnValue: _i3.Future<int?>.value(),
-      ) as _i3.Future<int?>);
+        returnValue: _i4.Future<int?>.value(),
+      ) as _i4.Future<int?>);
 
   @override
-  _i3.Future<void> saveExerciseIfNotExists(_i4.Exercise? exercise) =>
+  _i4.Future<void> saveExerciseIfNotExists(_i5.Exercise? exercise) =>
       (super.noSuchMethod(
         Invocation.method(
           #saveExerciseIfNotExists,
           [exercise],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Future<_i4.Exercise?> readExercise(int? id) => (super.noSuchMethod(
+  _i4.Future<_i5.Exercise?> readExercise(int? id) => (super.noSuchMethod(
         Invocation.method(
           #readExercise,
           [id],
         ),
-        returnValue: _i3.Future<_i4.Exercise?>.value(),
-      ) as _i3.Future<_i4.Exercise?>);
+        returnValue: _i4.Future<_i5.Exercise?>.value(),
+      ) as _i4.Future<_i5.Exercise?>);
 
   @override
-  _i3.Future<List<_i4.Exercise>> readAllExercises() => (super.noSuchMethod(
+  _i4.Future<List<_i5.Exercise>> readAllExercises() => (super.noSuchMethod(
         Invocation.method(
           #readAllExercises,
           [],
         ),
-        returnValue: _i3.Future<List<_i4.Exercise>>.value(<_i4.Exercise>[]),
-      ) as _i3.Future<List<_i4.Exercise>>);
+        returnValue: _i4.Future<List<_i5.Exercise>>.value(<_i5.Exercise>[]),
+      ) as _i4.Future<List<_i5.Exercise>>);
 
   @override
-  _i3.Future<void> updateExercise(
+  _i4.Future<void> updateExercise(
     int? id,
-    _i4.Exercise? exercise,
+    _i5.Exercise? exercise,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -82,16 +96,91 @@ class MockExerciseDatabaseInterface extends _i1.Mock
             exercise,
           ],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 
   @override
-  _i3.Future<int> deleteExercise(int? id) => (super.noSuchMethod(
+  _i4.Future<int> deleteExercise(int? id) => (super.noSuchMethod(
         Invocation.method(
           #deleteExercise,
           [id],
         ),
-        returnValue: _i3.Future<int>.value(0),
-      ) as _i3.Future<int>);
+        returnValue: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
+}
+
+/// A class which mocks [DatabaseHelperInterface].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDatabaseHelperInterface extends _i1.Mock
+    implements _i6.DatabaseHelperInterface {
+  MockDatabaseHelperInterface() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<_i2.Database> get database => (super.noSuchMethod(
+        Invocation.getter(#database),
+        returnValue: _i4.Future<_i2.Database>.value(_FakeDatabase_0(
+          this,
+          Invocation.getter(#database),
+        )),
+      ) as _i4.Future<_i2.Database>);
+
+  @override
+  _i4.Future<void> close() => (super.noSuchMethod(
+        Invocation.method(
+          #close,
+          [],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+}
+
+/// A class which mocks [SessionDatabaseInterface].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSessionDatabaseInterface extends _i1.Mock
+    implements _i7.SessionDatabaseInterface {
+  MockSessionDatabaseInterface() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<int> createSession(_i8.Session? session) => (super.noSuchMethod(
+        Invocation.method(
+          #createSession,
+          [session],
+        ),
+        returnValue: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
+
+  @override
+  _i4.Future<List<_i8.Session>> readAllSessions() => (super.noSuchMethod(
+        Invocation.method(
+          #readAllSessions,
+          [],
+        ),
+        returnValue: _i4.Future<List<_i8.Session>>.value(<_i8.Session>[]),
+      ) as _i4.Future<List<_i8.Session>>);
+
+  @override
+  _i4.Future<int> updateSession(_i8.Session? session) => (super.noSuchMethod(
+        Invocation.method(
+          #updateSession,
+          [session],
+        ),
+        returnValue: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
+
+  @override
+  _i4.Future<int> deleteSession(int? sessionId) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteSession,
+          [sessionId],
+        ),
+        returnValue: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
 }
