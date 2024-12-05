@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:zenfit/db/interfaces/database_helper_interface.dart';
 
-class DatabaseHelper {
+class DatabaseHelper implements DatabaseHelperInterface {
   static final DatabaseHelper instance = DatabaseHelper._init();
   static Database? _database;
 

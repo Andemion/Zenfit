@@ -1,8 +1,9 @@
 import 'package:zenfit/models/session_model.dart';
 import 'package:zenfit/models/exercises_model.dart';
 import 'database_helper.dart';
+import 'package:zenfit/db/interfaces/sessions_database_interface.dart';
 
-class SessionDatabase {
+class SessionDatabase implements SessionDatabaseInterface {
   final DatabaseHelper dbHelper = DatabaseHelper.instance;
 
   // CREATE : Ajouter une nouvelle session
