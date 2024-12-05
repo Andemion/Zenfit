@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:zenfit/widgets/session_summary_screen.dart';
-
-import 'package:flutter/material.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:zenfit/widgets/session_summary_screen.dart';
+import 'package:zenfit/models/session_model.dart';
+import 'package:zenfit/models/exercises_model.dart';
+import 'package:zenfit/db/sessions_database.dart';
 
 class SessionEndScreen extends StatefulWidget {
   final String type; // Type de séance : AMRAP, HIIT, EMON
   final String sessionName; // Nom de la séance
   final List<Map<String, dynamic>> exercises; // Liste des exercices avec répétitions initiales
   final int sessionDuration;
+  final int? sessionId; // ID de la session à mettre à jour
+  final int sessionReminder;
+  final DateTime sessionDate;
 
   const SessionEndScreen({
     Key? key,
@@ -18,6 +20,9 @@ class SessionEndScreen extends StatefulWidget {
     required this.sessionName,
     required this.exercises,
     required this.sessionDuration,
+    required this.sessionId, // ID de la session
+    required this.sessionReminder,
+    required this.sessionDate,
   }) : super(key: key);
 
   @override
@@ -38,7 +43,7 @@ class _SessionEndScreenState extends State<SessionEndScreen> {
     
     // Initialisation des répétitions
     if (widget.type == 'AMRAP') {
-      repetitions = widget.exercises.map<int>((exercise) => exercise['reps']).toList(); // Répétitions pour AMRAP
+      repetitions = widget.exercises.map<int>((exercise) => exercise['reps'] ?? 0).toList(); // Répétitions pour AMRAP, avec sécurité contre null
     } else {
       repetitions = List.filled(widget.exercises.length, 0); // Initialisation des répétitions à 0 pour HIIT et EMON
     }
@@ -67,15 +72,44 @@ class _SessionEndScreenState extends State<SessionEndScreen> {
     _speech.stop();
   }
 
-  void saveSession() {
+  // Fonction pour enregistrer la session avec mise à jour dans la base de données
+  void saveSession() async {
     // Préparer les données des exercices avec les répétitions
     List<Map<String, dynamic>> updatedExercises = widget.exercises.map((exercise) {
       int index = widget.exercises.indexOf(exercise);
+      // Vérification pour éviter les nulls dans 'reps'
+      int reps = repetitions[index];
+
       return {
-        'name': exercise['name'],
-        'reps': repetitions[index],
+        'name': exercise['name'] ?? 'Inconnu',
+        'reps': reps, // Répétitions mises à jour
       };
     }).toList();
+
+    // Créer une nouvelle session avec les données mises à jour
+    final updatedSession = Session(
+      id: widget.sessionId ?? 0, // L'ID de la session que nous mettons à jour (valeur par défaut 0 si null)
+      date: DateTime.now(), // Vous pouvez ajuster ceci pour prendre en compte la date de la session
+      reminder: widget.sessionReminder,
+      name: widget.sessionName,
+      duration: Duration(seconds: widget.sessionDuration ?? 0), // Conversion correcte de la durée
+      sessionType: widget.type,
+      exercises: updatedExercises.map((e) {
+        return Exercise(
+          id: e['id'] ?? 0, // Assurez-vous que 'id' existe, sinon utiliser une valeur par défaut
+          name: e['name'] ?? 'Inconnu', // Nom de l'exercice, valeur par défaut si null
+          number: e['number'] ?? 0, // Valeur par défaut si 'number' est null
+          duration: Duration(seconds: e['duration'] ?? 0), // Assurez-vous que 'duration' existe, sinon valeur par défaut
+        );
+      }).toList(),
+      comment: _commentController.text,
+    );
+
+    // Utiliser la méthode updateSession pour mettre à jour la session dans la base de données
+    await SessionDatabase().updateSession(updatedSession);
+
+    // Ajouter un print pour vérifier l'objet de la session après mise à jour
+    print('Session mise à jour : ${updatedSession.toJson()}');
 
     // Naviguer vers SummaryScreen avec les données de la séance
     Navigator.push(
@@ -84,7 +118,7 @@ class _SessionEndScreenState extends State<SessionEndScreen> {
         builder: (context) => SummaryScreen(
           sessionName: widget.sessionName,
           type: widget.type,
-          seriesCount: widget.type == 'AMRAP' ? seriesCount : null,
+
           exercises: updatedExercises,
           comment: _commentController.text,
           sessionDuration: widget.sessionDuration,
@@ -149,148 +183,73 @@ class _SessionEndScreenState extends State<SessionEndScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
-
-                Text(
-                  'Répétitions par exercice',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                for (int i = 0; i < widget.exercises.length; i++) ...[
-                  Text(
-                    widget.exercises[i]['name'],
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (repetitions[i] > 0) repetitions[i]--;
-                            });
-                          },
-                          icon: Icon(Icons.remove),
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        Text(
-                          '${repetitions[i]}',
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              repetitions[i]++;
-                            });
-                          },
-                          icon: Icon(Icons.add),
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                ],
               ],
 
-              // Section HIIT et EMON : Répétitions
-              if (widget.type == 'HIIT' || widget.type == 'EMOM') ...[
-                Text(
-                  'Répétitions par exercice',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                for (int i = 0; i < widget.exercises.length; i++) ...[
-                  Text(
-                    widget.exercises[i]['name'],
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (repetitions[i] > 0) repetitions[i]--;
-                            });
-                          },
-                          icon: Icon(Icons.remove),
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        Text(
-                          '${repetitions[i]}',
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              repetitions[i]++;
-                            });
-                          },
-                          icon: Icon(Icons.add),
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                ],
-              ],
+              SizedBox(height: 30),
 
-              // Section pour ajouter un commentaire
+              // Exercices et boutons de répétition
               Text(
-                'Ajouter un commentaire',
+                'Répétitions par exercice',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              TextField(
-                controller: _commentController,
-                decoration: InputDecoration(
-                  hintText: 'Commentaire...',
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isListening ? Icons.mic_off : Icons.mic,
-                      color: Theme.of(context).primaryColor,
+              Column(
+                children: List.generate(widget.exercises.length, (index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: [
+                        Text(
+                          widget.exercises[index]['name'],
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (repetitions[index] > 0) repetitions[index]--;
+                            });
+                          },
+                          icon: Icon(Icons.remove),
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        Text(
+                          '${repetitions[index]}',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              repetitions[index]++;
+                            });
+                          },
+                          icon: Icon(Icons.add),
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ],
                     ),
-                    onPressed: _isListening ? _stopListening : _startListening,
-                  ),
-                ),
-                style: TextStyle(color: Colors.black),
+                  );
+                }),
               ),
+
               SizedBox(height: 20),
 
-              Center(
-                child: ElevatedButton(
-                  onPressed: saveSession,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ),
-                  child: Text(
-                    'Enregistrer la séance',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+              // Commentaire
+              TextField(
+                controller: _commentController,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  labelText: 'Ajouter un commentaire',
+                  border: OutlineInputBorder(),
                 ),
+              ),
+
+              SizedBox(height: 30),
+
+              // Bouton d'enregistrement
+              ElevatedButton(
+                onPressed: saveSession,
+                child: Text('Enregistrer la session'),
               ),
             ],
           ),

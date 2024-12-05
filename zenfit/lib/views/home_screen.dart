@@ -74,6 +74,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => SessionStartScreen(
+                            sessionDate: selectedSession.date,
+                            sessionId: selectedSession.id,
+                            sessionReminder: selectedSession.reminder,
                             title: selectedSession.name,
                             duration: selectedSession.duration.inMinutes,
                             type: selectedSession.sessionType,
@@ -118,6 +121,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => SessionStartScreen(
+                            sessionId: selectedSession.id,
+                            sessionReminder: selectedSession.reminder,
+                            sessionDate: selectedSession.date,
                             title: selectedSession.name,
                             duration: selectedSession.duration.inMinutes,
                             type: selectedSession.sessionType,
@@ -169,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                session.sessionType,
+                session.name,
                 style: TextStyle(
                   fontSize: 14,
                   color: isToday ? Colors.white : Colors.black,
