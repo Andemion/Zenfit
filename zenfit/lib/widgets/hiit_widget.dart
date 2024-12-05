@@ -5,6 +5,7 @@ import 'package:zenfit/style/text_style.dart';
 import 'package:zenfit/style/input_decoration.dart';
 import 'package:zenfit/style/icon_theme.dart';
 import 'package:zenfit/models/exercises_model.dart';
+import 'package:zenfit/db/exercises_database.dart';
 
 class HiitWidget extends StatefulWidget {
   final Function(Exercise) onExerciseAdded;
@@ -16,12 +17,34 @@ class HiitWidget extends StatefulWidget {
 }
 
 class _HiitWidget extends State<HiitWidget> {
-  Duration _exerciseTime = Duration(minutes: 0);
+  final exerciseDatabase = ExerciseDatabase();
+  final FixedExtentScrollController _pickerController = FixedExtentScrollController();
   final _formKey = GlobalKey<FormState>();
+  List<Exercise> exerciseList = [];
+  bool _isCustomExercise = false;
+  Duration _exerciseTime = Duration(minutes: 0);
   String _exerciseName = '';
   int _exerciseNumber = 0;
-  String? _selectedExercise;
-  final List<String> _exerciseList = ['Abdo', 'Pompe', 'Squat', 'Custom'];
+  int? _selectedExerciseId;
+
+  @override
+  void initState() {
+    super.initState();
+    getExercises();
+  }
+
+  @override
+  void dispose() {
+    _pickerController.dispose();
+    super.dispose();
+  }
+
+  Future<void> getExercises() async {
+    final exercisesDB = await exerciseDatabase.readAllExercises();
+    setState(() {
+      exerciseList = exercisesDB;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,51 +60,46 @@ class _HiitWidget extends State<HiitWidget> {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: 200.0,
-            child: CupertinoPicker(
-              itemExtent: 32.0,
-              onSelectedItemChanged: (int index) {
-                setState(() {
-                  _exerciseTime = Duration(seconds: index * 5);
-                });
-              },
-              children: List<Widget>.generate(12 * 12, (int index) {
-                final seconds = index * 5;
-                return Center(
-                  child: Text('${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}'),
-                );
-              }),
-            ),
-          ),
           Form(
             key: _formKey,
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<int>(
                   decoration: greyInput(context).copyWith(
                     labelText: "Sélectionnez un exercice",
                   ),
-                  value: _selectedExercise,
-                  items: _exerciseList.map((String exercise) {
-                    return DropdownMenuItem(
-                      value: exercise,
-                      child: Text(exercise),
+                  value: _selectedExerciseId, // Utiliser l'id comme valeur
+                  items: exerciseList.map((exercise) {
+                    return DropdownMenuItem<int>(
+                      value: exercise.id, // La valeur sera l'id de l'exercice
+                      child: Text('${exercise.name} / ${exercise.duration.inSeconds} Sec'),
                     );
                   }).toList(),
-                  onChanged: (String? value) {
+                  onChanged: (int? id) {
                     setState(() {
-                      _selectedExercise = value;
-                      if (value != 'Custom') {
-                        _exerciseName = value ?? '';
+                      _selectedExerciseId = id; // Mettre à jour l'id sélectionné
+                      if (id != null) {
+                        // Trouver l'exercice correspondant à l'id
+                        final selectedExercise = exerciseList.firstWhere((exercise) => exercise.id == id);
+
+                        _exerciseName = selectedExercise.name;
+                        _isCustomExercise = _exerciseName == "Custom";
+                        // Mettre à jour le temps de l'exercice
+                        _exerciseTime = selectedExercise.duration;
+                        // Mettre à jour la position du picker
+                        final pickerIndex = _exerciseTime.inSeconds ~/ 5;
+                        _pickerController.jumpToItem(pickerIndex);
                       } else {
                         _exerciseName = '';
+                        _isCustomExercise = false;
+                        _exerciseTime = Duration.zero; // Réinitialiser si aucun exercice sélectionné
+                        _pickerController.jumpToItem(0);
                       }
                     });
                   },
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null) {
                       return 'Veuillez sélectionner un exercice';
                     }
                     return null;
@@ -89,7 +107,7 @@ class _HiitWidget extends State<HiitWidget> {
                 ),
                 const SizedBox(height: 10),
                 Visibility(
-                  visible: _selectedExercise == 'Custom',
+                  visible: _isCustomExercise,
                   child: TextFormField(
                     decoration: greyInput(context).copyWith(
                       labelText: "Nom de l'exercice (personnalisé)",
@@ -100,11 +118,30 @@ class _HiitWidget extends State<HiitWidget> {
                       });
                     },
                     validator: (String? value) {
-                      if (_selectedExercise == 'Custom' && (value == null || value.isEmpty)) {
+                      if (_selectedExerciseId == null && (value == null || value.isEmpty)) {
                         return 'Veuillez entrer un nom pour l\'exercice';
                       }
                       return null;
                     },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 200.0,
+                  child: CupertinoPicker(
+                    scrollController: _pickerController,
+                    itemExtent: 32.0,
+                    onSelectedItemChanged: (int index) {
+                      setState(() {
+                        _exerciseTime = Duration(seconds: index * 5);
+                      });
+                    },
+                    children: List<Widget>.generate(12 * 12, (int index) {
+                      final seconds = index * 5;
+                      return Center(
+                        child: Text('${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}'),
+                      );
+                    }),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -121,6 +158,9 @@ class _HiitWidget extends State<HiitWidget> {
                         number: _exerciseNumber,
                         duration: _exerciseTime,
                       );
+
+                      // Sauvegarde l'exercice si non existant
+                      exerciseDatabase.saveExerciseIfNotExists(newExercise);
                       widget.onExerciseAdded(newExercise);
                       widget.onExerciseAdded(pause);
                       Navigator.pop(context);

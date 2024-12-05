@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zenfit/style/button_style.dart';
 import 'package:zenfit/style/text_style.dart';
 import 'package:zenfit/style/input_decoration.dart';
 import 'package:zenfit/style/icon_theme.dart';
 import 'package:zenfit/models/exercises_model.dart';
+import 'package:zenfit/db/exercises_database.dart';
 
 class EmomWidget extends StatefulWidget {
   final Function(Exercise) onExerciseAdded;
@@ -16,12 +16,35 @@ class EmomWidget extends StatefulWidget {
 }
 
 class _EmomWidget extends State<EmomWidget> {
-  Duration _exerciseTime = Duration(minutes: 1);
+  final TextEditingController _repetitionController = TextEditingController();
+  final exerciseDatabase = ExerciseDatabase();
   final _formKey = GlobalKey<FormState>();
+  List<Exercise> exerciseList = [];
+  bool _isCustomExercise = false;
+  Duration _exerciseTime = Duration(minutes: 1);
   String _exerciseName = '';
   int _exerciseNumber = 0;
-  String? _selectedExercise;
-  final List<String> _exerciseList = ['Abdo', 'Pompe', 'Squat', 'Custom'];
+  int? _selectedExerciseId;
+
+  @override
+  void initState() {
+    super.initState();
+    getExercises();
+    _repetitionController.text = _exerciseNumber.toString();
+  }
+
+  @override
+  void dispose() {
+    _repetitionController.dispose();
+    super.dispose();
+  }
+
+  Future<void> getExercises() async {
+    final exercisesDB = await exerciseDatabase.readAllExercises();
+    setState(() {
+      exerciseList = exercisesDB;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,29 +65,40 @@ class _EmomWidget extends State<EmomWidget> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<int>(
                   decoration: greyInput(context).copyWith(
                     labelText: "Sélectionnez un exercice",
                   ),
-                  value: _selectedExercise,
-                  items: _exerciseList.map((String exercise) {
-                    return DropdownMenuItem(
-                      value: exercise,
-                      child: Text(exercise),
+                  value: _selectedExerciseId, // Utiliser l'id comme valeur
+                  items: exerciseList.map((exercise) {
+                    return DropdownMenuItem<int>(
+                      value: exercise.id, // La valeur sera l'id de l'exercice
+                      child: Text('${exercise.name} / ${exercise.number} rep'),
                     );
                   }).toList(),
-                  onChanged: (String? value) {
+                  onChanged: (int? id) {
                     setState(() {
-                      _selectedExercise = value;
-                      if (value != 'Custom') {
-                        _exerciseName = value ?? '';
+                      _selectedExerciseId = id; // Mettre à jour l'id sélectionné
+                      if (id != null) {
+                        // Trouver l'exercice correspondant à l'id
+                        final selectedExercise =
+                        exerciseList.firstWhere((exercise) => exercise.id == id);
+                        _exerciseName = selectedExercise.name;
+                        _exerciseNumber = selectedExercise.number;
+                        _isCustomExercise = _exerciseName == "Custom";
+                        // Mettre à jour le contrôleur pour afficher les répétitions sélectionnées
+                        _repetitionController.text = _exerciseNumber.toString();
+
                       } else {
                         _exerciseName = '';
+                        _exerciseNumber = 0; // Réinitialiser pour "Custom"
+                        _isCustomExercise = false;
+                        _repetitionController.text = ''; // Réinitialiser le contrôleur
                       }
                     });
                   },
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null) {
                       return 'Veuillez sélectionner un exercice';
                     }
                     return null;
@@ -72,7 +106,7 @@ class _EmomWidget extends State<EmomWidget> {
                 ),
                 const SizedBox(height: 10),
                 Visibility(
-                  visible: _selectedExercise == 'Custom',
+                  visible: _isCustomExercise,
                   child: TextFormField(
                     decoration: greyInput(context).copyWith(
                       labelText: "Nom de l'exercice (personnalisé)",
@@ -83,7 +117,7 @@ class _EmomWidget extends State<EmomWidget> {
                       });
                     },
                     validator: (String? value) {
-                      if (_selectedExercise == 'Custom' && (value == null || value.isEmpty)) {
+                      if (_selectedExerciseId == null && (value == null || value.isEmpty)) {
                         return 'Veuillez entrer un nom pour l\'exercice';
                       }
                       return null;
@@ -92,6 +126,7 @@ class _EmomWidget extends State<EmomWidget> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
+                  controller: _repetitionController, // Utiliser le contrôleur
                   keyboardType: TextInputType.number,
                   decoration: greyInput(context).copyWith(
                     labelText: 'Nombre de répétitions',
@@ -115,11 +150,16 @@ class _EmomWidget extends State<EmomWidget> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+
                       final newExercise = Exercise(
+                        id: _selectedExerciseId, // Ajouter l'id sélectionné
                         name: _exerciseName,
                         number: _exerciseNumber,
                         duration: _exerciseTime,
                       );
+
+                      // Sauvegarde l'exercice si non existant
+                      exerciseDatabase.saveExerciseIfNotExists(newExercise);
                       widget.onExerciseAdded(newExercise);
                       Navigator.pop(context);
                     }

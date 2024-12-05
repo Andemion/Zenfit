@@ -10,13 +10,14 @@ Future<void> initializeExercises() async {
   if (existingExercises.isEmpty) {
     // Insérer des exercices par défaut1
     final defaultExercises = [
-      Exercise(name: 'Jumping Jacks', number: 10, duration: Duration(seconds: 0)),
-      Exercise(name: 'Push-ups', number: 10, duration: Duration(seconds: 0)),
-      Exercise(name: 'Custom', number: 0, duration: Duration(seconds: 0)),
+      Exercise(name: 'Custom', number: 0, duration: Duration(seconds: 30)),
+      Exercise(name: 'Jumping Jacks', number: 20, duration: Duration(seconds: 30)),
+      Exercise(name: 'Push-ups', number: 20, duration: Duration(seconds: 30)),
+
     ];
 
     for (final exercise in defaultExercises) {
-      await exerciseDatabase.createExercise(exercise);
+      await exerciseDatabase.saveExerciseIfNotExists(exercise);
     }
 
     print('Exercices par défaut insérés dans la base de données.');
