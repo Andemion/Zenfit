@@ -1,8 +1,9 @@
 import 'package:zenfit/models/exercises_model.dart';
 import 'package:zenfit/db/exercises_database.dart';
+import 'package:zenfit/db/interfaces/exercise_database_interface.dart';
 
-Future<void> initializeExercises() async {
-  final exerciseDatabase = ExerciseDatabase();
+Future<void> initializeExercises(ExerciseDatabaseInterface exerciseDatabase) async {
+  //final exerciseDatabase = ExerciseDatabase();
 
   // Vérifier si des exercices existent déjà
   final existingExercises = await exerciseDatabase.readAllExercises();
