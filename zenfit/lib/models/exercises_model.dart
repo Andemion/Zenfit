@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zenfit/db/database_helper.dart';
 
 class Exercise {
-  final int? id;
+  int? id;
   final String name;
   final int number;
   final Duration duration;

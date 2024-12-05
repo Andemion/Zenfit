@@ -26,6 +26,8 @@ class _HiitWidget extends State<HiitWidget> {
   String _exerciseName = '';
   int _exerciseNumber = 0;
   int? _selectedExerciseId;
+  int? exerciseId = 0;
+  int? pauseId = 0;
 
   @override
   void initState() {
@@ -71,7 +73,7 @@ class _HiitWidget extends State<HiitWidget> {
                   ),
                   value: _selectedExerciseId, // Utiliser l'id comme valeur
                   items: exerciseList.map((exercise) {
-                    return DropdownMenuItem<int>(
+                    return DropdownMenuItem<int>( 
                       value: exercise.id, // La valeur sera l'id de l'exercice
                       child: Text('${exercise.name} / ${exercise.duration.inSeconds} Sec'),
                     );
@@ -114,7 +116,6 @@ class _HiitWidget extends State<HiitWidget> {
                     ),
                     onChanged: (String value) {
                       setState(() {
-                        _selectedExerciseId = null;
                         _exerciseName = value;
                       });
                     },
@@ -147,8 +148,11 @@ class _HiitWidget extends State<HiitWidget> {
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async { // Ajouter async ici
                     if (_formKey.currentState!.validate()) {
+                      if (_selectedExerciseId == 1) {
+                          _selectedExerciseId = null;
+                        }
                       final newExercise = Exercise(
                         id: _selectedExerciseId,
                         name: _exerciseName,
@@ -163,10 +167,12 @@ class _HiitWidget extends State<HiitWidget> {
                       );
 
                       // Sauvegarde l'exercice si non existant
-                      exerciseId = exerciseDatabase.saveExerciseIfNotExists(newExercise);
-                      pauseId = exerciseDatabase.saveExerciseIfNotExists(pause);
-                      newExercise.id = exerciseId;
-                      pause.id = pauseId
+                      exerciseId = await exerciseDatabase.saveExerciseIfNotExists(newExercise); // Ajouter await ici
+                      pauseId = await exerciseDatabase.saveExerciseIfNotExists(pause); // Ajouter await ici
+
+                      newExercise.id = exerciseId ?? 0; // Si exerciseId est null, on assigne 0 par défaut
+                      pause.id = pauseId ?? 0; // Si pauseId est null, on assigne 0 par défaut
+
                       widget.onExerciseAdded(newExercise);
                       widget.onExerciseAdded(pause);
                       Navigator.pop(context);

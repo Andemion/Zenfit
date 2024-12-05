@@ -19,7 +19,7 @@ class ExerciseDatabase implements ExerciseDatabaseInterface {
   }
 
   // CREATE : Ajouter un nouvel exercice
-  Future<void> saveExerciseIfNotExists(Exercise exercise) async {
+  Future<int?> saveExerciseIfNotExists(Exercise exercise) async {
     final db = await DatabaseHelper.instance.database;
 
     // Vérifiez si l'exercice existe déjà
@@ -36,11 +36,9 @@ class ExerciseDatabase implements ExerciseDatabaseInterface {
       print('Exercice sauvegardé dans la base de données.');
       return findExerciseIdByName(exercise.name);
     } else {
-      if (exercise.id =! 1) {
         updateExercise(existsId, exercise);
         print('Exercice update dans la base de données.');
-      }
-      return existsId
+      return existsId;
     }
   }
 
