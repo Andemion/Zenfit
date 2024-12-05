@@ -114,6 +114,7 @@ class _HiitWidget extends State<HiitWidget> {
                     ),
                     onChanged: (String value) {
                       setState(() {
+                        _selectedExerciseId = null;
                         _exerciseName = value;
                       });
                     },
@@ -149,18 +150,23 @@ class _HiitWidget extends State<HiitWidget> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       final newExercise = Exercise(
+                        id: _selectedExerciseId,
                         name: _exerciseName,
                         number: _exerciseNumber,
                         duration: _exerciseTime,
                       );
                       final pause = Exercise(
+                        id: _selectedExerciseId,
                         name: "Pause",
                         number: _exerciseNumber,
                         duration: _exerciseTime,
                       );
 
                       // Sauvegarde l'exercice si non existant
-                      exerciseDatabase.saveExerciseIfNotExists(newExercise);
+                      exerciseId = exerciseDatabase.saveExerciseIfNotExists(newExercise);
+                      pauseId = exerciseDatabase.saveExerciseIfNotExists(pause);
+                      newExercise.id = exerciseId;
+                      pause.id = pauseId
                       widget.onExerciseAdded(newExercise);
                       widget.onExerciseAdded(pause);
                       Navigator.pop(context);

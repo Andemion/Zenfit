@@ -113,6 +113,7 @@ class _AmrapWidget extends State<AmrapWidget> {
                     ),
                     onChanged: (String value) {
                       setState(() {
+                        _selectedExerciseId = null;
                         _exerciseName = value;
                       });
                     },
@@ -159,7 +160,8 @@ class _AmrapWidget extends State<AmrapWidget> {
                       );
 
                       // Sauvegarde l'exercice si non existant
-                      exerciseDatabase.saveExerciseIfNotExists(newExercise);
+                      _selectedExerciseId = exerciseDatabase.saveExerciseIfNotExists(newExercise);
+                      newExercise.id = _selectedExerciseId;
                       widget.onExerciseAdded(newExercise);
                       Navigator.pop(context);
                     }

@@ -15,18 +15,19 @@ import 'package:zenfit/themes/dark_mode.dart';
 import 'package:zenfit/models/session_model.dart';
 import 'package:zenfit/db/database_helper.dart';
 import 'package:zenfit/db/initialize_exercises.dart';
+import 'package:zenfit/db/interfaces/exercise_database_interface.dart';
 
-void main() async {
+
+Future<void> initializeApp(exerciseDatabase) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await DatabaseHelper.instance.database;
+  await initializeExercises(exerciseDatabase);
+}
 
-  // Initialiser la base de données
-  final db = await DatabaseHelper.instance.database;
-
-  // Vous pouvez effectuer des opérations si nécessaire, par exemple initialiser des données
-  print('Base de données initialisée : $db');
-
-  await initializeExercises();
+void main() async {
+  final exerciseDatabase = ExerciseDatabaseInterface();
+  await initializeApp(exerciseDatabase);
   runApp(const MyApp());
 }
 

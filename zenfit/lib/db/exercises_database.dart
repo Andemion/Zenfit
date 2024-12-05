@@ -1,7 +1,8 @@
 import 'package:zenfit/models/exercises_model.dart';
+import 'package:zenfit/db/interfaces/exercise_database_interface.dart';
 import 'database_helper.dart';
 
-class ExerciseDatabase {
+class ExerciseDatabase implements ExerciseDatabaseInterface {
   final DatabaseHelper dbHelper = DatabaseHelper.instance;
 
   Future<int?> findExerciseIdByName(String name) async {
@@ -32,8 +33,13 @@ class ExerciseDatabase {
         'duration': exercise.duration.inSeconds, // Sauvegarder la durée en secondes
       });
       print('Exercice sauvegardé dans la base de données.');
+      return findExerciseIdByName(exercise.name);
     } else {
-      updateExercise(existsId, exercise);
+      if (exercise.id =! 1) {
+        updateExercise(existsId, exercise);
+        print('Exercice update dans la base de données.');
+      }
+      return existsId
     }
   }
 
